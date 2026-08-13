@@ -1,0 +1,17 @@
+﻿name: solarpv-eda
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - pandas
+  - numpy
+  - matplotlib
+  - seaborn
+  - jupyterlab
+  - scikit-learn
+  - statsmodels
+  - nbstripout
+  - pip
+  - pip:
+      - ydata-profiling
+      - xgboost
