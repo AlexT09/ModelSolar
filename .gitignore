@@ -6,3 +6,13 @@ __pycache__/
 
 # MyST build outputs
 _build
+
+# Proyecto Integrador Pipelines — artefactos generados
+Proyecto Integrador Pipelines/app/model.joblib
+Proyecto Integrador Pipelines/drift_report.html
+Proyecto Integrador Pipelines/.pytest_cache/
+
+# Excepción a la regla "data/" de arriba: este CSV se versiona a propósito para que el
+# proyecto integrador sea reproducible sin credenciales de Kaggle.
+!Proyecto Integrador Pipelines/data/
+!Proyecto Integrador Pipelines/data/heart.csv
