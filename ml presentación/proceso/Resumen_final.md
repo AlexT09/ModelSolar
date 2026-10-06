@@ -21,7 +21,13 @@ Arrancamos queriendo predecir la aptitud de un sitio para albergar una planta so
 
 Juntamos información de cinco fuentes: el dataset base de Mantilla-Guerra (con potencial solar y datos topográficos), el Global Energy Monitor (para coordenadas y nombres), XM (el operador eléctrico en Colombia, para tener la generación real hora a hora), y Open-Meteo (para la radiación, nubosidad, viento, temperatura y humedad).
 
-El proceso de limpieza fue riguroso. En la base mundial quitamos filas rotas, reparamos más de mil duplicados y resolvimos vacíos que eran sistemáticos. Esto nos dejó con 57,976 plantas y 15 predictoras. Para Colombia, armamos una serie con 8,589 días-planta provenientes de 16 plantas con coordenadas verificadas. 
+El proceso de limpieza fue riguroso. En la base mundial quitamos filas rotas, reparamos más de mil duplicados y resolvimos vacíos que eran sistemáticos. Esto nos dejó con 57,976 plantas y 15 predictoras. Para Colombia, armamos una serie con 8,589 días-planta provenientes de 16 plantas con coordenadas verificadas.
+
+![Pipeline del EDA](fig_pipeline_eda_mundial.png)
+
+![Pipeline de la base de Colombia](fig_pipeline_clima.png)
+
+![EDA de la base de Colombia](fig_eda_base_colombia.png) 
 
 ## 3. El problema oculto del índice global
 
@@ -41,15 +47,57 @@ En la **base mundial**, Random Forest y XGBoost, junto con el SVM de kernel, log
 
 En la **base de Colombia**, la historia se invierte. El factor de capacidad (FC) es casi proporcional a la radiación que recibe el panel. Por eso, un modelo lineal como Lasso logra explicar un R² de 0.47 del sube y baja diario de la planta, igualando o superando a modelos más complejos que tienden a sobreajustarse a las 6 zonas geográficas disponibles. Vimos empíricamente que cada kWh/m² de radiación suma alrededor de 4.7 puntos al FC.
 
+![FC contra radiación por planta](fig_fc_vs_radiacion.png)
+
+![Benchmark mundial](fig_benchmark_modelos.png)
+
+![ROC y matriz de confusión, base mundial](fig_benchmark_roc_confusion.png)
+
+![Efecto del ajuste, base mundial](fig_benchmark_ajuste.png)
+
+![Benchmark de Colombia](fig_benchmark_colombia.png)
+
+![ROC y matriz de confusión, Colombia](fig_benchmark_colombia_roc_confusion.png)
+
+![Comparativa de todos los modelos](fig_resumen_comparativa.png)
+
+![Efecto de las técnicas de balanceo](fig_exp_balanceo.png)
+
+![Curvas de desempeño anytime](fig_exp_anytime.png)
+
+![Evolución de la diversidad alélica en DEAP](fig_exp_diversidad.png)
+
+![Curvas ROC consolidadas](fig_exp_roc.png)
+
+![Matrices de confusión de los mejores clasificadores](fig_exp_confusion.png)
+
+![Predicciones frente a valores observados en regresión](fig_exp_reg_tvp.png)
+
+![Diagnóstico de residuos y heterocedasticidad](fig_exp_reg_residuos.png)
+
+![Curvas de calibración y error ECE](fig_exp_calibracion.png)
+
 ## 6. Las pruebas estadísticas
 
 Para salir de dudas, aplicamos la prueba de Clark-West y mediciones como la d de Cohen y la prueba de Diebold-Mariano (1995). Los resultados confirmaron sin espacio a duda la superioridad de Random Forest en la base global, con una d de Cohen gigantesca (10.01 respecto a Ridge y Lasso). Clark-West probó de forma contundente que incluir latitud y longitud dispara el poder predictivo (p < 0.001).
+
+![Diagrama de Diferencias Críticas de Nemenyi](fig_exp_cd.png)
 
 ## 7. Qué aprendimos sobre los modelos (Interpretabilidad y Rendimiento)
 
 El perfilamiento computacional confirmó que KNN es rápido de entrenar pero muy lento en inferencia. Random Forest y XGBoost concentran su costo al entrenar, logrando evaluar en fracciones de segundo, con picos de memoria bajísimos (el cuello de botella es el procesador, no la RAM). 
 
-Al aplicar técnicas de explicabilidad, notamos que SHAP y LIME ordenan de forma bastante diferente la cola de importancia de variables, pero ambos coinciden en cuáles son los 3 factores más críticos. 
+Al aplicar técnicas de explicabilidad, notamos que SHAP y LIME ordenan de forma bastante diferente la cola de importancia de variables, pero ambos coinciden en cuáles son los 3 factores más críticos.
+
+![Complejidad computacional y escalamiento](fig_exp_complejidad.png)
+
+![SHAP global en clasificación](fig_exp_shap_clf.png)
+
+![SHAP global en regresión](fig_exp_shap_reg.png)
+
+![Gráfico de cascada SHAP en observaciones individuales](fig_exp_shap_cascada.png)
+
+![Contraste metrológico LIME frente a TreeSHAP en XGBoost](fig_exp_lime_shap.png) 
 
 ## 8. Conclusiones y lo que queda pendiente
 
