@@ -4,8 +4,63 @@
 export const NOTEBOOK_URL =
   'https://github.com/AlexT09/ModelSolar/blob/main/ml%20presentaci%C3%B3n/proceso/EDA_Corregido(Entregable%203).ipynb';
 
+// ---------------------------------------------------------------------------------------------
+// Apertura: textos literales de "ml presentación/exposicion/main.tex" (sin el formato de LaTeX),
+// diapositivas "El problema", "Nuestra solución planteada", la diapositiva de mensaje,
+// "La pregunta" y "De dónde salen los datos". De esa exposición solo se toma la apertura: las
+// cifras de resultados de sus diapositivas finales no coinciden en todo con los cuadernos, así que
+// los resultados de la web salen de los cuadernos.
+// ---------------------------------------------------------------------------------------------
+export const EXPO = 'ml presentación/exposicion/main.tex';
+
+export const PROBLEMA = [
+  'Colombia y el mundo están instalando plantas solares a gran velocidad. Elegir **dónde** construir define cuánta energía producirá la planta durante décadas.',
+  'Un dataset reciente (Mantilla-Guerra et al., 2026) ofrece un **índice de aptitud solar** para 58,978 plantas del mundo.',
+  'Queríamos usarlo para predecir la aptitud de un lugar a partir de su clima.',
+];
+export const ENCONTRAMOS =
+  'El índice se calcula solo con el terreno, depende de la región y de cómo se procesaron los datos, y no se puede predecir desde el clima ni transferir entre continentes.';
+
+export const LINEAS = [
+  {
+    title: 'Línea 1: auditar el índice',
+    items: [
+      'EDA corregido de la base mundial.',
+      'Modelos base del curso con validación espacial y ajuste anidado.',
+      'Medir si el índice se transfiere entre regiones.',
+    ],
+  },
+  {
+    title: 'Línea 2: generación real',
+    items: [
+      'Base propia: generación horaria real de 16 plantas en Colombia (XM) y su clima (Open-Meteo).',
+      'Medir cuánto explica el clima la producción real.',
+      'Mismos modelos, sin data leakage.',
+    ],
+  },
+];
+
+export const MENSAJE = ['El índice de aptitud mide la región, no el clima.', 'Con datos reales, el clima explica la mitad de la producción diaria.'];
+
+export const PREGUNTA = [
+  'Idea inicial: predecir qué tan apto es un lugar para una planta solar **a partir del clima**, para que sirva en cualquier parte.',
+  'Dataset: Mantilla-Guerra et al. (2026), *Eng* 7(7):343. 58,978 plantas fotovoltaicas del mundo, 29 columnas.',
+  'Variable objetivo: índice de aptitud solar (IAS) de 0 a 1, y su versión en tres clases: Baja, Media y Alta.',
+  'Dos tareas: clasificación de la clase y regresión del índice.',
+];
+
+export const FUENTES: [string, string][] = [
+  ['Global Energy Monitor (febrero 2026)', 'Ubicación, capacidad y estado de cada planta'],
+  ['Global Solar Atlas', 'Irradiación y potencial fotovoltaico'],
+  ['ERA5 y NASA POWER', 'Temperatura, humedad y viento (promedios anuales)'],
+  ['Modelos de elevación (DEM)', 'Elevación, pendiente, orientación y curvatura'],
+  ['OpenStreetMap', 'Distancia a carretera y área de la planta'],
+];
+export const FUENTES_NOTA =
+  'Para la segunda parte construimos una base propia con **XM** (generación real horaria en Colombia) y **Open-Meteo** (clima por hora).';
+
 // [0]
-export const TITLE = 'EDA corregido: aptitud solar fotovoltaica (Entrega 3)';
+export const TITLE ='EDA corregido: aptitud solar fotovoltaica (Entrega 3)';
 export const COURSE = 'Proyecto final, Machine Learning, Pregrado en Ciencia de Datos.';
 export const AUTHORS =
   'Integrantes: Jesús David Arévalo Montilla, Enmanuel David Díaz Molinares, Alex David Terán Meza.';

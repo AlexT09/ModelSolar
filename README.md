@@ -14,7 +14,7 @@ Libro web del proyecto: [https://alext09.github.io/ModelSolar/](https://alext09.
 
 - **`ml presentación/`**: cuadernos del proyecto final (análisis exploratorio corregido, modelos base, experimento de 140 combinaciones y el modelo de generación en Colombia con datos de XM y Open-Meteo).
 - **`ml presentación/Dataset/`**: dataset fuente de [cimejia/solarPV](https://github.com/cimejia/solarPV/tree/main/Dataset). Los `.csv` y `.xlsx` no se versionan (`.gitignore`).
-- **`ml presentación/web/`**: web de visualización del EDA corregido.
+- **`ml presentación/web/`**: presentación web del proyecto completo, en [https://alext09.github.io/ModelSolar/presentacion/](https://alext09.github.io/ModelSolar/presentacion/).
 
 ### Entorno
 

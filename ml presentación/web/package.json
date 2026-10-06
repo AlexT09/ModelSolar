@@ -1,5 +1,5 @@
 {
-  "name": "eda-aptitud-solar-web",
+  "name": "modelsolar-web",
   "private": true,
   "version": "0.1.0",
   "type": "module",
@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "lucide-react": "^0.446.0",
+    "marked": "^18.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

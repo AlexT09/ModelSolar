@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { CLASS_COLORS, fmt, summary } from '@/lib/data';
-import { COURSE, NOTEBOOK_URL, TITLE } from '@/content';
+import { COURSE } from '@/content';
+import { GROUPS as NAV } from './TopBar';
+
+const CUADERNOS_URL = 'https://github.com/AlexT09/ModelSolar/tree/main/ml%20presentaci%C3%B3n/proceso';
 
 // Histograma del IAS limpio: 32 intervalos de 0.03 entre 0 y 0.96 (scripts/build_data.py)
 const BAR_HEIGHTS = summary.ias_hist;
 const BIN = 0.03;
-const NAV = [
-  { label: 'Objetivo', href: '#objetivo' },
-  { label: 'Calidad', href: '#calidad' },
-  { label: 'Mapa', href: '#mapa' },
-  { label: 'Región', href: '#region' },
-  { label: 'Validación', href: '#validacion' },
+
+// Cifras de los cuadernos (Experimento 2 celda 7, Experimento 3 celda 6, Benchmark Colombia celda 7)
+const RESULTS = [
+  { value: '0.894', label: 'F1 macro · Random Forest · base mundial' },
+  { value: '0.902', label: 'R² · Random Forest · índice de aptitud' },
+  { value: '0.469', label: 'R² del clima · generación real en Colombia' },
 ];
 
 function classOf(ias: number) {
@@ -44,31 +47,26 @@ function Animate({
   );
 }
 
-function CleaningCard() {
+function ResultsCard() {
   const maxHeight = Math.max(...BAR_HEIGHTS);
-  const removed = summary.rows_raw - summary.rows_clean;
 
   return (
     <Animate delay={900} direction="scale" className="w-full max-w-[405px] mx-auto lg:mx-0">
       <div className="w-full rounded-[24px] sm:rounded-[33px] bg-[rgba(17,16,15,0.35)] backdrop-blur-[20px] p-5 sm:p-8 pb-5 sm:pb-6">
-        <p className="text-white text-[16px] sm:text-[20px] font-[450] leading-[20px] mb-3 sm:mb-4">
-          Filas tras D1+D2+D8
+        <p className="text-white text-[16px] sm:text-[20px] font-[450] leading-[20px] mb-4 sm:mb-5">
+          Los resultados en tres números
         </p>
-        <p className="mb-2 sm:mb-3">
-          <span className="text-white text-[28px] sm:text-[46px] font-[450] leading-[1]">{fmt(summary.rows_clean)}</span>
-          <span className="text-white/20 text-[28px] sm:text-[46px] font-[450] leading-[1]"> filas</span>
-        </p>
-        <div className="flex items-center gap-[10px] mb-6 sm:mb-8">
-          <span className="px-[6px] py-[7px] bg-white/20 rounded-[6px] text-white text-[12px] sm:text-[14px] font-[450] leading-[14px]">
-            −{fmt(removed)}
-          </span>
-          <span className="text-white/80 text-[12px] sm:text-[14px] font-[450] leading-[14px] opacity-70">
-            de {fmt(summary.rows_raw)} ({removed} eliminadas)
-          </span>
+        <div className="space-y-3 mb-6 sm:mb-8">
+          {RESULTS.map((r) => (
+            <div key={r.value} className="flex items-baseline gap-3">
+              <span className="text-white text-[28px] sm:text-[38px] font-[450] leading-[1] tabular-nums w-[92px] sm:w-[118px] shrink-0">{r.value}</span>
+              <span className="text-white/70 text-[12px] sm:text-[13px] leading-[1.35]">{r.label}</span>
+            </div>
+          ))}
         </div>
 
         <p className="text-white/60 text-[11px] sm:text-[12px] font-[450] leading-[12px] mb-3">
-          <span className="code">solar_aptitude</span> · umbrales 0.4 y 0.6
+          <span className="code">solar_aptitude</span> · {fmt(summary.rows_clean)} plantas · umbrales 0.4 y 0.6
         </p>
         <div>
           <div className="relative">
@@ -139,28 +137,29 @@ export default function Hero() {
             <div className="max-w-[640px]">
               <Animate delay={300} direction="up">
                 <h1 className="text-white text-[36px] sm:text-[52px] md:text-[64px] lg:text-[72px] font-normal leading-[0.95] mb-5 sm:mb-8">
-                  {TITLE}
+                  Proyecto ModelSolar
                 </h1>
               </Animate>
               <Animate delay={500} direction="up">
                 <p className="text-white/80 text-[16px] sm:text-[18px] md:text-[20px] font-[450] leading-[1.3] max-w-[420px] mb-7 sm:mb-10">
-                  {COURSE}
+                  Aptitud solar fotovoltaica: del índice del dataset a la generación real.
+                  <span className="block text-white/55 text-[14px] sm:text-[15px] mt-3">{COURSE}</span>
                 </p>
               </Animate>
               <Animate delay={700} direction="up">
                 <div className="flex flex-wrap gap-3 sm:gap-4">
-                  <a href="#mapa"
+                  <a href="#proyecto"
                     className="inline-flex items-center h-[46px] sm:h-[51px] px-5 sm:px-[27px] bg-[#E9E9E9] rounded-[12px] text-[#0A0707] text-[14px] sm:text-[15.5px] font-[450] leading-[15.5px] transition-opacity hover:opacity-90">
-                    Ver el mapa
+                    Ver el proyecto
                   </a>
-                  <a href={NOTEBOOK_URL} target="_blank" rel="noreferrer"
+                  <a href={CUADERNOS_URL} target="_blank" rel="noreferrer"
                     className="inline-flex items-center h-[46px] sm:h-[51px] px-5 sm:px-[27px] rounded-[12px] border border-white text-white text-[14px] sm:text-[15.5px] font-[450] leading-[15.5px] transition-opacity hover:opacity-80">
-                    Abrir el cuaderno
+                    Ver los cuadernos
                   </a>
                 </div>
               </Animate>
             </div>
-            <CleaningCard />
+            <ResultsCard />
           </div>
         </div>
       </div>
@@ -206,13 +205,13 @@ function Nav() {
 
         <Animate delay={200} direction="down" className="hidden lg:block">
           <div className="h-[52px] p-[3px] bg-[rgba(0,0,0,0.35)] rounded-[13px] backdrop-blur-[17px] flex items-center gap-[5px]">
-            <a href={NOTEBOOK_URL} target="_blank" rel="noreferrer"
+            <a href={CUADERNOS_URL} target="_blank" rel="noreferrer"
               className="h-[46px] px-6 inline-flex items-center rounded-[11px] text-white text-[14px] font-[450] leading-[14px] hover:bg-white/5 transition-colors">
-              Cuaderno
+              Cuadernos
             </a>
-            <a href="#mapa"
+            <a href="#proyecto"
               className="h-[46px] px-6 inline-flex items-center bg-[#E9E9E9] rounded-[11px] text-[#0A0707] text-[14px] font-[450] leading-[14px] hover:bg-white transition-colors">
-              Ver el mapa
+              Ver el proyecto
             </a>
           </div>
         </Animate>
@@ -259,13 +258,13 @@ function Nav() {
             className={`flex flex-col gap-3 transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
             style={{ transitionDelay: isOpen ? '350ms' : '0ms' }}
           >
-            <a href="#mapa" onClick={() => setIsOpen(false)}
+            <a href="#proyecto" onClick={() => setIsOpen(false)}
               className="w-full h-[50px] flex items-center justify-center bg-[#E9E9E9] rounded-[12px] text-[#0A0707] text-[15px] font-[450] transition-colors hover:bg-white">
-              Ver el mapa
+              Ver el proyecto
             </a>
-            <a href={NOTEBOOK_URL} target="_blank" rel="noreferrer"
+            <a href={CUADERNOS_URL} target="_blank" rel="noreferrer"
               className="w-full h-[50px] flex items-center justify-center rounded-[12px] border border-white/30 text-white text-[15px] font-[450] transition-colors hover:bg-white/5">
-              Abrir el cuaderno
+              Ver los cuadernos
             </a>
           </div>
         </div>

@@ -85,6 +85,65 @@ body {
   min-width: 0;
 }
 
+/* Markdown de las celdas de los cuadernos */
+.md {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 15px;
+  line-height: 1.65;
+}
+.md > * + * { margin-top: 0.9em; }
+.md h1, .md h2, .md h3, .md h4 {
+  color: #fff;
+  font-weight: 450;
+  line-height: 1.25;
+  margin-top: 1.4em;
+}
+.md > :first-child { margin-top: 0; }
+.md h1 { font-size: 22px; }
+.md h2 { font-size: 20px; }
+.md h3, .md h4 { font-size: 17px; }
+.md strong { color: rgba(255, 255, 255, 0.92); font-weight: 600; }
+.md a { text-decoration: underline; text-decoration-color: rgba(255, 255, 255, 0.3); text-underline-offset: 4px; }
+.md a:hover { text-decoration-color: #fff; }
+.md ul, .md ol { padding-left: 1.3em; }
+.md ul { list-style: disc; }
+.md ol { list-style: decimal; }
+.md li + li { margin-top: 0.35em; }
+.md code {
+  font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  font-size: 0.86em;
+  padding: 0.1em 0.35em;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.92);
+  overflow-wrap: anywhere;
+}
+.md pre code { display: block; padding: 12px 14px; white-space: pre; overflow-x: auto; }
+.md img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;
+  border-radius: 14px;
+  padding: 8px;
+}
+.md table {
+  display: block;
+  overflow-x: auto;
+  border-collapse: collapse;
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+.md th, .md td {
+  text-align: left;
+  vertical-align: top;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.md th { color: rgba(255, 255, 255, 0.55); font-weight: 450; }
+.md-small { font-size: 13px; }
+.md-small ul { list-style: none; padding-left: 0; }
+
 .glass {
   background: rgba(255, 255, 255, 0.035);
   border: 1px solid rgba(255, 255, 255, 0.08);
