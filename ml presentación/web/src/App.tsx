@@ -1,13 +1,13 @@
 import Hero from '@/components/Hero';
 import TopBar from '@/components/TopBar';
 import { CONTAINER } from '@/components/Section';
-import { Contexto, Introduccion, Objetivos } from '@/sections/Inicio';
+import { Introduccion } from '@/sections/Inicio';
 import { Eda, Etl } from '@/sections/Datos';
 import { Conclusiones, Modelos, Optimizacion } from '@/sections/Modelos';
 import { COURSE } from '@/content';
 
-// Estructura de la sustentación según la guía del entregable (sección 8): introducción, contexto y
-// objetivos; ETL; EDA; modelos y resultados; comparación de optimizadores; resultados finales.
+// Estructura de la sustentación según la guía del entregable (sección 8): introducción (problema,
+// dataset y objetivos); ETL; EDA; modelos y resultados; comparación de optimizadores; conclusiones.
 export default function App() {
   return (
     <>
@@ -16,8 +16,6 @@ export default function App() {
 
       <main>
         <Introduccion />
-        <Contexto />
-        <Objetivos />
         <Etl />
         <Eda />
         <Modelos />

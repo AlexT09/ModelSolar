@@ -11,7 +11,7 @@ export interface Cell {
 
 export type NbKey =
   | 'eda' | 'benchmark'
-  | 'exp1' | 'exp2' | 'exp3' | 'exp4' | 'exp5' | 'exp6' | 'exp7';
+  | 'exp1' | 'exp2' | 'exp3' | 'exp4' | 'exp5' | 'exp6' | 'exp7' | 'resumen';
 
 type Data = Record<NbKey, { file: string; cells: Cell[] }> & {
   _resumen_md: Record<string, string>;

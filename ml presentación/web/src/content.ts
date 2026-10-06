@@ -40,26 +40,27 @@ export const FUENTES: [string, string][] = [
 export const OBJETIVO_GENERAL =
   'Desarrollar y comparar modelos de Machine Learning de clasificación y regresión para predecir la aptitud solar de plantas fotovoltaicas, incorporando optimización de hiperparámetros, validación estadística, eficiencia computacional e interpretabilidad.';
 
+// Cada objetivo con lo que se hizo para cumplirlo, según los cuadernos (cifras con su celda en la web)
 export const OBJETIVOS = [
   {
     text: 'Preparar y explorar los datos (ETL y EDA).',
-    section: { label: '4 y 5. ETL y EDA', href: '#etl' },
-    evidence: 'De 58,978 a 57,976 plantas y 15 predictoras, con 14 problemas de calidad tratados.',
+    section: { label: '2 y 3. ETL y EDA', href: '#etl' },
+    evidence: 'Se documentaron 14 problemas de calidad y la base pasó de 58,978 a 57,976 plantas con 15 predictoras. Se encontró que el índice depende de la región y se definió la validación por bloques espaciales de 5°.',
   },
   {
     text: 'Entrenar modelos de clasificación y regresión.',
-    section: { label: '6. Modelos y resultados', href: '#modelos' },
-    evidence: '7 modelos por tarea, 136 combinaciones con balanceo y validación anidada por bloques espaciales.',
+    section: { label: '4. Modelos y resultados', href: '#modelos' },
+    evidence: 'Se entrenaron 7 modelos de clasificación y 7 de regresión, primero como modelos base y luego en 136 combinaciones de balanceo y optimizador, con validación anidada por bloques.',
   },
   {
     text: 'Comparar métodos de optimización de hiperparámetros.',
-    section: { label: '7. Comparación de optimizadores', href: '#optimizacion' },
-    evidence: 'Grid Search, Random Search, optimización bayesiana y algoritmo genético, con su costo computacional.',
+    section: { label: '5. Comparación de optimizadores', href: '#optimizacion' },
+    evidence: 'Se compararon Grid Search, Random Search, optimización bayesiana y algoritmo genético con el mismo presupuesto de 30 evaluaciones, y se midió el costo computacional de cada modelo.',
   },
   {
     text: 'Elegir e interpretar el mejor modelo con pruebas estadísticas.',
-    section: { label: '8. Resultados finales', href: '#conclusiones' },
-    evidence: 'Friedman, Nemenyi, DeLong y MCS; interpretación con SHAP y LIME.',
+    section: { label: '6. Resultados finales', href: '#conclusiones' },
+    evidence: 'Se aplicaron Friedman, Nemenyi, DeLong y el conjunto de confianza de modelos, y se interpretó el mejor modelo con SHAP y LIME.',
   },
 ];
 

@@ -8,8 +8,6 @@ const CUADERNOS_URL = 'https://github.com/AlexT09/ModelSolar/tree/main/ml%20pres
 // El recorrido de la presentación, en el orden de la guía del entregable (sección 8)
 const AGENDA = [
   { label: 'Introducción', href: '#introduccion' },
-  { label: 'Contexto: el dataset', href: '#contexto' },
-  { label: 'Objetivos', href: '#objetivos' },
   { label: 'ETL', href: '#etl' },
   { label: 'EDA', href: '#eda' },
   { label: 'Modelos implementados y resultados', href: '#modelos' },
@@ -47,9 +45,9 @@ function Animate({
 function AgendaCard() {
   return (
     <Animate delay={900} direction="scale" className="w-full max-w-[405px] mx-auto lg:mx-0">
-      <nav aria-label="Recorrido de la presentación"
+      <nav aria-label="Contenidos de la presentación"
         className="w-full rounded-[24px] sm:rounded-[33px] bg-[rgba(17,16,15,0.35)] backdrop-blur-[20px] p-5 sm:p-8 pb-4 sm:pb-6">
-        <p className="text-white text-[16px] sm:text-[20px] font-[450] leading-[20px] mb-4 sm:mb-6">El proyecto</p>
+        <p className="text-white text-[16px] sm:text-[20px] font-[450] leading-[20px] mb-4 sm:mb-6">Contenidos</p>
         <ol>
           {AGENDA.map((item, i) => (
             <li key={item.href} className="opacity-0 animate-fade-up" style={{ animationDelay: `${1100 + i * 80}ms` }}>
@@ -93,7 +91,7 @@ export default function Hero() {
               </Animate>
               <Animate delay={500} direction="up">
                 <p className="text-white/80 text-[16px] sm:text-[18px] md:text-[20px] font-[450] leading-[1.3] max-w-[420px] mb-7 sm:mb-10">
-                  Entregable 3 · Predicción de la aptitud solar de plantas fotovoltaicas con Machine Learning.
+                  Predicción de la aptitud solar de plantas fotovoltaicas con Machine Learning.
                   <span className="block text-white/55 text-[14px] sm:text-[15px] mt-3">{COURSE}</span>
                 </p>
               </Animate>

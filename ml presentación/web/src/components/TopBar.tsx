@@ -4,7 +4,8 @@ import { CONTAINER } from './Section';
 // Las partes de la presentación según la guía del entregable (sección 8)
 export const GROUPS = [
   { label: 'Introducción', href: '#introduccion' },
-  { label: 'Datos', href: '#etl' },
+  { label: 'ETL', href: '#etl' },
+  { label: 'EDA', href: '#eda' },
   { label: 'Modelos', href: '#modelos' },
   { label: 'Optimización', href: '#optimizacion' },
   { label: 'Conclusiones', href: '#conclusiones' },

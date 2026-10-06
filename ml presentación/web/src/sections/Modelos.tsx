@@ -1,6 +1,7 @@
-import { Cells, Md, NbImage, References, Source, type Pick } from '@/components/Notebook';
-import { Section, type Tab } from '@/components/Section';
-import { mdCell, resumenMd, type NbKey } from '@/lib/notebooks';
+import { Cells, Md, NbImage, References, Source, Synthesis } from '@/components/Notebook';
+import { Section } from '@/components/Section';
+import { mdCell, type NbKey } from '@/lib/notebooks';
+import { paras, sentences, Summary } from './Datos';
 
 const BASE = import.meta.env.BASE_URL;
 
@@ -11,30 +12,26 @@ function para(nb: NbKey, i: number, start: string) {
   return p.trim();
 }
 
-function Summary({ text, source }: { text: string; source: string }) {
-  return (
-    <div>
-      <Md text={text} className="!text-[17px] sm:!text-[19px] !text-white/80" />
-      <p className="text-white/35 text-[11px] font-mono mt-3">{source}</p>
-    </div>
-  );
+// Primer párrafo de una celda de Resumen_Final.ipynb, sin su encabezado
+const resumenFirst = (i: number) => mdCell('resumen', i).replace(/^#+\s.*\n+/, '').split(/\n\s*\n/)[0].trim();
+
+function Stack({ children }: { children: React.ReactNode }) {
+  return <div className="space-y-8">{children}</div>;
 }
 
-// Cada pestaña muestra las celdas que la guía del entregable pide para esa parte: qué se hizo,
-// el resultado y la interpretación del cuaderno. El resto queda en el cuaderno enlazado.
-const tab = (label: string, nb: NbKey, picks: Pick[]): Tab => ({
-  label,
-  content: <Cells nb={nb} picks={picks} />,
-});
+// Resumen_final.md §5, primer párrafo: resultados de la base mundial
+const RESULTADOS_MUNDIAL = paras('5. Resultados y métricas clave')[0];
+// Resumen_final.md §8: las dos oraciones de la base mundial (la tercera es de Colombia)
+const CONCLUSION = sentences(paras('8. Conclusiones y lo que queda pendiente')[0], 2);
 
-// 6. Modelos implementados y resultados obtenidos
+// 4. Modelos implementados y resultados obtenidos
 export function Modelos() {
   return (
     <Section
       id="modelos"
       kicker="Modelos"
-      title="6. Modelos implementados y resultados"
-      summary={<Summary text={para('exp2', 19, 'Los tres modelos')} source="Experimento_2_Clasificacion.ipynb, celda 19" />}
+      title="4. Modelos implementados y resultados"
+      summary={<Summary text={RESULTADOS_MUNDIAL} source="Resumen_final.md, sección 5" />}
       stats={[
         { value: '136', label: 'combinaciones corridas: 108 de clasificación y 28 de regresión', source: 'Experimento 1, celda 15' },
         { value: '0.894', label: 'F1 macro de Random Forest (XGBoost 0.888)', source: 'Experimento 2, celda 7' },
@@ -53,26 +50,40 @@ export function Modelos() {
         </div>
       }
       tabs={[
-        tab('Validación y diseño', 'exp1', [0, 3, { i: 4, out: [1] }, 5, 6, 10, 11]),
-        tab('Modelos base', 'benchmark', [0, 2, 5, 6, { i: 8, out: [0] }, 9, 10, 11, 21, 22]),
-        tab('Clasificación', 'exp2', [0, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 19]),
-        tab('Regresión', 'exp3', [0, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]),
+        {
+          label: 'Clasificación',
+          content: (
+            <Stack>
+              <Synthesis i={12} />
+              <Cells nb="exp2" picks={[6, 7, 8, 9]} />
+              <Synthesis i={6} />
+              <Cells nb="exp2" picks={[12, 13, 19]} />
+            </Stack>
+          ),
+        },
+        {
+          label: 'Regresión',
+          content: (
+            <Stack>
+              <Synthesis i={14} />
+              <Cells nb="exp3" picks={[5, 6, 9, 10, 14]} />
+            </Stack>
+          ),
+        },
       ]}
-      after={
-        <References items={[{ nb: 'exp1', i: 16 }, { nb: 'benchmark', i: 23 }, { nb: 'exp2', i: 20 }, { nb: 'exp3', i: 15 }]} />
-      }
+      after={<References items={[{ nb: 'exp2', i: 20 }, { nb: 'exp3', i: 15 }]} />}
     />
   );
 }
 
-// 7. Comparación de métodos de optimización
+// 5. Comparación de métodos de optimización
 export function Optimizacion() {
   return (
     <Section
       id="optimizacion"
       kicker="Optimización"
-      title="7. Comparación de métodos de optimización"
-      summary={<Summary text={para('exp4', 20, 'Con 30 evaluaciones')} source="Experimento_4_Optimizadores.ipynb, celda 20" />}
+      title="5. Comparación de métodos de optimización"
+      summary={<Summary text={resumenFirst(8)} source="Resumen_Final.ipynb, celda 8" />}
       stats={[
         { value: '0.240', label: 'área bajo la curva de regret de la bayesiana (grid 0.486, menor es mejor)', source: 'Experimento 4, celda 13' },
         { value: '14 y 12', label: 'veces que random search y bayesiana fueron los mejores, de 34 grupos', source: 'Experimento 4, celda 4' },
@@ -89,30 +100,32 @@ export function Optimizacion() {
         </div>
       }
       tabs={[
-        tab('Optimizadores', 'exp4', [0, 3, 4, 5, 6, 7, 8, 12, 13, 14, 15, 16, { i: 17, out: [0] }, 18, 19, 20]),
-        tab('Costo computacional', 'exp5', [0, 2, 3, 4, 5, 8, 9, 14, { i: 15, out: [0] }, 18, 19, 20, { i: 21, out: [1] }, 22, 23, 24]),
+        {
+          label: 'Optimizadores',
+          content: <Cells nb="exp4" picks={[3, 4, 12, { i: 13, out: [0] }, 14, { i: 15, out: [] }, 20]} />,
+        },
+        {
+          label: 'Costo computacional',
+          content: (
+            <Stack>
+              <Synthesis i={10} />
+              <Cells nb="exp5" picks={[22, 23, 24]} />
+            </Stack>
+          ),
+        },
       ]}
       after={<References items={[{ nb: 'exp4', i: 21 }, { nb: 'exp5', i: 25 }]} />}
     />
   );
 }
 
-// Las dos primeras oraciones del párrafo de conclusiones de Resumen_final.md, que tratan la base mundial
-const CONCLUSION = resumenMd['8. Conclusiones y lo que queda pendiente']
-  .split(/\n\s*\n/)[0]
-  .split(/(?<=\.)\s+/)
-  .slice(0, 2)
-  .join(' ');
-
-const RESULTADOS_MUNDIAL = resumenMd['5. Resultados y métricas clave'].split(/\n\s*\n/)[0];
-
-// 8. Resultados finales y conclusiones
+// 6. Resultados finales y conclusiones
 export function Conclusiones() {
   return (
     <Section
       id="conclusiones"
       kicker="Conclusiones"
-      title="8. Resultados finales y conclusiones"
+      title="6. Resultados finales y conclusiones"
       summary={<Summary text={CONCLUSION} source="Resumen_final.md, sección 8" />}
       stats={[
         { value: 'RF ≈ XGBoost', label: 'DeLong no los distingue (p de Holm 0.84 en la clase Baja)', source: 'Experimento 6, celda 9' },
@@ -131,18 +144,22 @@ export function Conclusiones() {
         </div>
       }
       tabs={[
-        tab('Comparación estadística', 'exp6', [0, 3, 4, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]),
-        tab('Interpretabilidad', 'exp7', [0, 3, 4, 5, 6, 7, 8, 9, 10, 11]),
         {
-          label: 'Conclusiones',
+          label: 'Pruebas estadísticas',
           content: (
-            <div className="max-w-[960px] space-y-6">
-              <Md text={CONCLUSION} />
-              <Md text={RESULTADOS_MUNDIAL} />
-              <Md text={resumenMd['6. Las pruebas estadísticas']} noImages />
-              <Md text={resumenMd['7. Qué aprendimos sobre los modelos (interpretabilidad y rendimiento)']} noImages />
-              <p className="text-white/40 text-[12px] font-mono pt-2">Fuente: proceso/Resumen_final.md, secciones 5 a 8</p>
-            </div>
+            <Stack>
+              <Synthesis i={16} />
+              <Cells nb="exp6" picks={[3, 4, 8, 9, 12, 13]} />
+            </Stack>
+          ),
+        },
+        {
+          label: 'Interpretabilidad',
+          content: (
+            <Stack>
+              <Synthesis i={18} />
+              <Cells nb="exp7" picks={[3, 4, 9, 10, 11]} />
+            </Stack>
           ),
         },
       ]}

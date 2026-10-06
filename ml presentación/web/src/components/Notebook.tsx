@@ -94,6 +94,20 @@ export function Source({ nb, from, to, cells }: { nb: NbKey; from?: number; to?:
   );
 }
 
+// La síntesis que el equipo escribió en Resumen_Final.ipynb para un tema, sin su encabezado.
+export function Synthesis({ i }: { i: number }) {
+  const cell = cellsIn('resumen', i, i)[0];
+  if (!cell?.md) throw new Error(`resumen[${i}] no es markdown`);
+  const body = cell.md.replace(/^#+\s.*\n+/, '');
+  return (
+    <div className="glass p-5 sm:p-6 max-w-[960px] border-l-4 !border-l-white/30">
+      <p className="text-white/50 text-[12px] mb-3">Síntesis del equipo</p>
+      <Md text={body} />
+      <p className="text-white/35 text-[11px] font-mono mt-3">Resumen_Final.ipynb, celda {i}</p>
+    </div>
+  );
+}
+
 // Las referencias de los cuadernos de una sección, plegadas.
 export function References({ items }: { items: { nb: NbKey; i: number }[] }) {
   return (

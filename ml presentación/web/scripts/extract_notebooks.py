@@ -34,7 +34,11 @@ NOTEBOOKS = {
     "exp5": "Experimento_5_Computacional.ipynb",
     "exp6": "Experimento_6_Estadistica.ipynb",
     "exp7": "Experimento_7_Interpretabilidad.ipynb",
+    "resumen": "Resumen_Final.ipynb",
 }
+
+# De estos cuadernos solo interesa el texto: sus figuras repiten las de los experimentos
+MD_ONLY = {"resumen"}
 
 SKIP_TEXT = ("<pandas.io.formats.style.Styler", "<Figure size")
 ANSI = re.compile(r"\x1b\[[0-9;]*m")
@@ -51,7 +55,7 @@ def extract(key, name):
         if cell["cell_type"] == "markdown":
             cells.append({"i": i, "md": text_of(cell["source"])})
             continue
-        if cell["cell_type"] != "code":
+        if cell["cell_type"] != "code" or key in MD_ONLY:
             continue
         outputs, images = [], []
         for out in cell.get("outputs", []):
