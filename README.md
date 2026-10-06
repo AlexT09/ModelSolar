@@ -84,22 +84,17 @@ ModelSolar/
 
 ### 1. Entorno de Ejecución
 
+Para reproducir los cuadernos localmente:
+
 ```powershell
 conda env create -f environment.yml
 conda activate solarpv-eda
 python -m ipykernel install --user --name solarpv-eda --display-name "Python (solarpv-eda)"
 ```
 
-### 2. Verificación de Pruebas Unitarias
+### 2. Resultados Consolidados y Entregables
 
-```powershell
-cd "ml presentación/proceso"
-pytest
-```
-
-### 3. Visualización de Resultados Consolidados
-
-Para revisar de forma condensada las 140 combinaciones, las curvas *anytime*, las pruebas estadísticas y los Cuadros 1 a 8:
-- Cuaderno ejecutable: [`ml presentación/proceso/Resumen_Final.ipynb`](ml%20presentación/proceso/Resumen_Final.ipynb)
-- Informe técnico estructurado: [`ml presentación/proceso/Resumen_final.md`](ml%20presentación/proceso/Resumen_final.md)
-- Diapositivas de la presentación oral: [`ml presentación/exposicion/main.tex`](ml%20presentación/exposicion/main.tex)
+- **Cuaderno Síntesis:** [`ml presentación/proceso/Resumen_Final.ipynb`](ml%20presentación/proceso/Resumen_Final.ipynb) (contiene los Cuadros 1 a 8 ejecutados con todas sus figuras y métricas).
+- **Informe Técnico:** [`ml presentación/proceso/Resumen_final.md`](ml%20presentación/proceso/Resumen_final.md) (documento consolidado de metodología y resultados).
+- **Diapositivas:** [`ml presentación/exposicion/main.tex`](ml%20presentación/exposicion/main.tex) (presentación oral en LaTeX Beamer).
+- **Libro Web Interactivo:** Publicado vía GitHub Pages con la totalidad de los capítulos navegables.
