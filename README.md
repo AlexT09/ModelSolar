@@ -13,8 +13,8 @@ Libro web del proyecto: [https://krissv89.github.io/ModelSolar/](https://krissv8
 ### Contenido
 
 - **`ml presentación/`**: cuadernos del proyecto final (análisis exploratorio corregido, modelos base, experimento de 140 combinaciones y el modelo de generación en Colombia con datos de XM y Open-Meteo).
-- **`tareas/`**: talleres del semestre (EDA en PySpark/Sklearn, detección y mitigación de data leakage con pipelines, y clasificador bayesiano).
-- **`Proyecto Integrador Pipelines/`**: taller de pipelines y despliegue.
+- **`ml presentación/Dataset/`**: dataset fuente de [cimejia/solarPV](https://github.com/cimejia/solarPV/tree/main/Dataset). Los `.csv` y `.xlsx` no se versionan (`.gitignore`).
+- **`ml presentación/web/`**: web de visualización del EDA corregido.
 
 ### Entorno
 
