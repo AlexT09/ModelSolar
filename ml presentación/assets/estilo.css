@@ -49,15 +49,32 @@ article h2 {
   border-bottom: 2px solid var(--myst-color-primary);
 }
 
-/* Tablas de resultados: encabezado oscuro y filas con aire */
-article table th {
+/* Tablas: encabezado oscuro en las del texto y en los cuadros; las de pandas con encabezado claro */
+article thead th {
   background: var(--myst-color-text);
   color: var(--myst-color-bg);
 }
 
-html.dark article table th {
+html.dark article thead th {
   background: var(--myst-color-accent-surface);
   color: var(--myst-color-accent-surface-text);
+}
+
+article table.dataframe thead th {
+  background: var(--myst-color-surface);
+  color: var(--myst-color-text);
+}
+
+html.dark article table.dataframe thead th {
+  background: var(--myst-color-surface);
+  color: var(--myst-color-text);
+}
+
+article tbody th {
+  background: transparent;
+  color: inherit;
+  font-weight: 600;
+  text-align: left;
 }
 
 article table td,
