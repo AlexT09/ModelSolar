@@ -29,10 +29,17 @@ __pycache__/
 Proyecto Integrador Pipelines/app/model.joblib
 Proyecto Integrador Pipelines/drift_report.html
 
-# Raw data dumps and heavy non-notebook files
+# Raw data dumps, auxiliary scripts and heavy non-notebook files
 tareas/tarea_3_clasificador_bayesiano/heart+disease/
+tareas/tarea_3_clasificador_bayesiano/scripts/
 tareas/tarea_1_pidaa_eda/metricas_sklearn.json
-ml presentación/resumen_de_sesion/Continuacionconv.txt
+ml presentación/proceso/src/
+ml presentación/proceso/tests/
+ml presentación/proceso/correr_experimento.py
+ml presentación/proceso/nota_asistencia_ia.md
+ml presentación/proceso/datos_xm/celdas_modelo.json
+ml presentación/resumen_de_sesion/
+ml presentación/entregas_anteriores/
 
 # Exception for pipeline test dataset (required by CI)
 !Proyecto Integrador Pipelines/data/

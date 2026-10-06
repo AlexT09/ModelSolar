@@ -38,22 +38,12 @@ ModelSolar/
 │   │   ├── Resumen_Final.ipynb               # CUADERNO SÍNTESIS EJECUTADO (Cuadros 1 a 8)
 │   │   ├── Resumen_final.md                  # Informe técnico consolidado
 │   │   ├── Clima_a_Generacion_Colombia.ipynb # Construcción de la base XM + Open-Meteo
-│   │   ├── Benchmark_Colombia.ipynb          # Modelos predictivos en generación real
-│   │   ├── src/                              # Módulos Python reutilizables (config, stats, runner)
-│   │   ├── tests/                            # Pruebas unitarias automatizadas (pytest)
-│   │   └── runs/                             # Tabla maestra (master.parquet) y predicciones OOF
+│   │   └── Benchmark_Colombia.ipynb          # Modelos predictivos en generación real
 │   │
-│   ├── exposicion/                           # Presentación oral del proyecto
-│   │   ├── main.tex                          # Diapositivas en LaTeX Beamer (conferencia)
-│   │   ├── figuras/                          # Gráficos y diagramas incluidos en la presentación
-│   │   └── guiones/                          # Guion detallado por diapositiva
-│   │
-│   ├── resumen_de_sesion/                    # Bitácoras y reporte de fuentes solares abiertas
-│   │   └── exploracion_fuentes_plantas.md    # Catálogo de datos de plantas en el mundo
-│   │
-│   └── entregas_anteriores/                  # Histórico de cuadernos y borradores previos
-│       ├── EDA(Entregable 1)(1).ipynb
-│       └── Modelo_Base(Entregabloe 2)(1).ipynb
+│   └── exposicion/                           # Presentación oral del proyecto
+│       ├── main.tex                          # Diapositivas en LaTeX Beamer (conferencia)
+│       ├── figuras/                          # Gráficos y diagramas incluidos en la presentación
+│       └── guiones/                          # Guion detallado por diapositiva
 │
 ├── Proyecto Integrador Pipelines/            # ARQUITECTURA DE INTEGRACIÓN Y DESPLIEGUE
 │   ├── app/                                  # Servicio de inferencia con FastAPI
@@ -77,19 +67,12 @@ ModelSolar/
 │   │
 │   └── tarea_3_clasificador_bayesiano/       # Tarea 3: Modelos bayesianos en Heart Disease
 │       ├── tarea3.ipynb                      # Cuaderno final ejecutado (GaussianNB vs Logística)
-│       ├── 4. Clasificador Bayesiano - Machine Learning.pdf # Enunciado oficial de la tarea
 │       ├── clasificador_bayesiano.md         # Documento conceptual de análisis bayesiano
-│       ├── documentaci_n_del_dataset_cleveland_heart_disease.md # Diccionario de datos
-│       ├── heart+disease/                    # Dataset original de Cleveland (UCI)
-│       └── scripts/                          # Scripts auxiliares de generación y análisis
+│       └── documentaci_n_del_dataset_cleveland_heart_disease.md # Diccionario de datos
 │
 ├── notebooks/                                # Cuadernos complementarios de apoyo
 │   └── Entregable 1 Proyecto/                # Versión final de entrega del EDA Solar
 │       └── EDA.ipynb
-│
-├── Dataset/                                  # Archivos de datos solares brutos
-│   ├── Dataset_Mundial.xlsx
-│   └── Dataset_Mundial_Final.csv
 │
 ├── environment.yml                           # Entorno reproducible Conda
 └── README.md                                 # Este documento
