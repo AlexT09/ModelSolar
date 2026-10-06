@@ -33,6 +33,7 @@ export default function App() {
             </a>
             , con el número de celda de cada uno.
           </span>
+          <a href="secciones.html" className="underline underline-offset-4 hover:text-white">Ver en vista por paneles</a>
           <span>Jesús David Arévalo Montilla, Enmanuel David Díaz Molinares y Alex David Terán Meza · {COURSE}</span>
         </div>
       </footer>
