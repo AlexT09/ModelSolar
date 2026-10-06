@@ -1,15 +1,60 @@
-# See docs at: https://mystmd.org/guide/frontmatter
 version: 1
 project:
-  id: 5bafcfc5-229b-4d4b-ba42-e466b61cdc2f
-  # title:
-  # description:
-  # keywords: []
-  # authors: []
+  title: 'Aptitud solar fotovoltaica: del índice del dataset a la generación real'
+  description: Proyecto de Machine Learning, Universidad del Norte. EDA corregido,
+    benchmark de modelos base, experimento de 140 combinaciones y línea de Colombia.
+  authors:
+  - name: Jesús David Arévalo Montilla
+  - name: Enmanuel David Díaz Molinares
+  - name: Alex David Terán Meza
+  keywords:
+  - aptitud solar
+  - fotovoltaica
+  - validación espacial
+  - optimización de hiperparámetros
+  license: CC-BY-NC-SA-4.0
   github: https://github.com/KrissV89/ModelSolar
-  # To autogenerate a Table of Contents, run "jupyter book init --write-toc"
+  bibliography:
+  - ml presentación/proceso/referencias.bib
+  exclude:
+  - tareas/**
+  - Proyecto Integrador Pipelines/**
+  - notebooks/**
+  - Dataset/**
+  - data/**
+  - outputs/**
+  - src/**
+  - tests/**
+  - scripts/**
+  - ml presentación/exposicion/**
+  - ml presentación/resumen_de_sesion/**
+  - ml presentación/entregas_anteriores/**
+  - '*.tex'
+  - '*.pdf'
+  toc:
+  - file: ml presentación/index.md
+  - title: Datos y EDA
+    children:
+    - file: ml presentación/proceso/EDA_Corregido(Entregable 3).ipynb
+  - title: Modelos base
+    children:
+    - file: ml presentación/proceso/Benchmark_Modelos_Base.ipynb
+  - title: Experimento de 140 combinaciones
+    children:
+    - file: ml presentación/proceso/Experimento_1_Diseno.ipynb
+    - file: ml presentación/proceso/Experimento_2_Clasificacion.ipynb
+    - file: ml presentación/proceso/Experimento_3_Regresion.ipynb
+    - file: ml presentación/proceso/Experimento_4_Optimizadores.ipynb
+    - file: ml presentación/proceso/Experimento_5_Computacional.ipynb
+    - file: ml presentación/proceso/Experimento_6_Estadistica.ipynb
+    - file: ml presentación/proceso/Experimento_7_Interpretabilidad.ipynb
+  - title: Línea de Colombia (clima y generación real)
+    children:
+    - file: ml presentación/proceso/Clima_a_Generacion_Colombia.ipynb
+    - file: ml presentación/proceso/Benchmark_Colombia.ipynb
+  - title: Resumen final
+    children:
+    - file: ml presentación/proceso/Resumen_final.md
+    - file: ml presentación/proceso/Resumen_Final.ipynb
 site:
   template: book-theme
-  # options:
-  #   favicon: favicon.ico
-  #   logo: site_logo.png

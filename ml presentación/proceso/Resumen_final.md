@@ -391,7 +391,7 @@ Optuna superó a los demás métodos en el 69% de los casos y alcanzó el 95% de
 
 Cota asintótica superior teórica frente a exponente empírico $\hat{\alpha}$ ajustado en submuestras de $n \in [1,000, 50,000]$ filas y $p \in [4, 15]$ características:
 
-| Algoritmo | Complejidad Entrenamiento | Complejidad Inferencia | Exponente Empírico $n$ ($\hat{lpha}$) | Técnica de Aceleración Aplicada | Ganancia de Velocidad Observada |
+| Algoritmo | Complejidad Entrenamiento | Complejidad Inferencia | Exponente Empírico $n$ ($\hat{\alpha}$) | Técnica de Aceleración Aplicada | Ganancia de Velocidad Observada |
 |---|---|---|---|---|---|
 | **KNN** | $O(1)$ | $O(n \cdot p)$ | 0.98 (lineal en consulta) | Indexación FAISS (`IndexFlatL2` y `IndexHNSWFlat`) | 3.2x (Flat) / 8.4x (HNSW aproximado con $k=15$) |
 | **Modelos Lineales (Logística / Ridge)** | $O(n \cdot p)$ por época | $O(p)$ | 1.04 | Solver estocástico SAGA frente a liblinear | 2.8x en $n=50,000$ con penalización elástica |
