@@ -10,15 +10,6 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  // Dos presentaciones: index.html (página continua) y secciones.html (vista por paneles)
-  build: {
-    rollupOptions: {
-      input: {
-        main: fileURLToPath(new URL('./index.html', import.meta.url)),
-        secciones: fileURLToPath(new URL('./secciones.html', import.meta.url)),
-      },
-    },
-  },
   optimizeDeps: {
     exclude: ['lucide-react'],
   },

@@ -1,16 +1,6 @@
 # Presentación web del Proyecto ModelSolar
 
-Recorrido del proyecto completo, en dos formatos con el mismo contenido:
-
-| Formato | Enlace | Entrada |
-|---|---|---|
-| Página continua: todas las secciones seguidas, con scroll | https://alext09.github.io/ModelSolar/presentacion/ | `index.html` → `src/App.tsx` |
-| Vista por paneles: índice lateral y una parte a la vez, como un libro de Jupyter Book | https://alext09.github.io/ModelSolar/presentacion/secciones.html | `secciones.html` → `src/AppSecciones.tsx` |
-
-En la vista por paneles cada parte tiene su dirección (`secciones.html#eda/validacion-espacial`) y se
-avanza con las flechas ← → del teclado. Las dos usan los mismos componentes de `src/sections/`: un
-cambio de contenido aparece en ambas.
-
+Recorrido del proyecto completo, publicado en https://alext09.github.io/ModelSolar/presentacion/:
 
 | Parte | Sección | Cuadernos |
 |---|---|---|
