@@ -40,6 +40,14 @@ jobs:
         run: npm install -g jupyter-book
       - name: Build HTML Assets
         run: jupyter-book build --html
+      # La web del EDA se publica dentro del mismo sitio, en /eda/
+      - name: Build web del EDA
+        working-directory: ml presentación/web
+        run: |
+          npm ci
+          npm run build
+          mkdir -p "$GITHUB_WORKSPACE/_build/html/eda"
+          cp -r dist/. "$GITHUB_WORKSPACE/_build/html/eda/"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
