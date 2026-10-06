@@ -1,25 +1,21 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown, Menu, X } from 'lucide-react';
-import { CLASS_COLORS, fmt, summary } from '@/lib/data';
 import { COURSE } from '@/content';
 import { GROUPS as NAV } from './TopBar';
 
 const CUADERNOS_URL = 'https://github.com/AlexT09/ModelSolar/tree/main/ml%20presentaci%C3%B3n/proceso';
 
-// Histograma del IAS limpio: 32 intervalos de 0.03 entre 0 y 0.96 (scripts/build_data.py)
-const BAR_HEIGHTS = summary.ias_hist;
-const BIN = 0.03;
-
-// Cifras de los cuadernos (Experimento 2 celda 7, Experimento 3 celda 6, Experimento 1 celda 15)
-const RESULTS = [
-  { value: '0.894', label: 'F1 macro · Random Forest · base mundial' },
-  { value: '0.902', label: 'R² · Random Forest · índice de aptitud' },
-  { value: '136', label: 'combinaciones de modelo, balanceo y optimizador' },
+// El recorrido de la presentación, en el orden de la guía del entregable (sección 8)
+const AGENDA = [
+  { label: 'Introducción', href: '#introduccion' },
+  { label: 'Contexto: el dataset', href: '#contexto' },
+  { label: 'Objetivos', href: '#objetivos' },
+  { label: 'ETL', href: '#etl' },
+  { label: 'EDA', href: '#eda' },
+  { label: 'Modelos implementados y resultados', href: '#modelos' },
+  { label: 'Comparación de métodos de optimización', href: '#optimizacion' },
+  { label: 'Resultados finales y conclusiones', href: '#conclusiones' },
 ];
-
-function classOf(ias: number) {
-  return ias < 0.4 ? 0 : ias < 0.6 ? 1 : 2;
-}
 
 function Animate({
   children,
@@ -47,72 +43,27 @@ function Animate({
   );
 }
 
-function ResultsCard() {
-  const maxHeight = Math.max(...BAR_HEIGHTS);
-
+// Tarjeta de la portada: el recorrido de la presentación. Cada punto entra escalonado y lleva a su sección.
+function AgendaCard() {
   return (
     <Animate delay={900} direction="scale" className="w-full max-w-[405px] mx-auto lg:mx-0">
-      <div className="w-full rounded-[24px] sm:rounded-[33px] bg-[rgba(17,16,15,0.35)] backdrop-blur-[20px] p-5 sm:p-8 pb-5 sm:pb-6">
-        <p className="text-white text-[16px] sm:text-[20px] font-[450] leading-[20px] mb-4 sm:mb-5">
-          Los resultados en tres números
-        </p>
-        <div className="space-y-3 mb-6 sm:mb-8">
-          {RESULTS.map((r) => (
-            <div key={r.value} className="flex items-baseline gap-3">
-              <span className="text-white text-[28px] sm:text-[38px] font-[450] leading-[1] tabular-nums w-[92px] sm:w-[118px] shrink-0">{r.value}</span>
-              <span className="text-white/70 text-[12px] sm:text-[13px] leading-[1.35]">{r.label}</span>
-            </div>
+      <nav aria-label="Recorrido de la presentación"
+        className="w-full rounded-[24px] sm:rounded-[33px] bg-[rgba(17,16,15,0.35)] backdrop-blur-[20px] p-5 sm:p-8 pb-4 sm:pb-6">
+        <p className="text-white text-[16px] sm:text-[20px] font-[450] leading-[20px] mb-4 sm:mb-6">El proyecto</p>
+        <ol>
+          {AGENDA.map((item, i) => (
+            <li key={item.href} className="opacity-0 animate-fade-up" style={{ animationDelay: `${1100 + i * 80}ms` }}>
+              <a href={item.href}
+                className="group flex items-baseline gap-4 py-[9px] sm:py-[10px] border-t border-white/10 first:border-0 text-white/80 hover:text-white transition-colors">
+                <span className="text-white/40 text-[12px] sm:text-[13px] font-[450] tabular-nums w-5 shrink-0 group-hover:text-white/70">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <span className="text-[14px] sm:text-[15px] font-[450] leading-[1.3]">{item.label}</span>
+              </a>
+            </li>
           ))}
-        </div>
-
-        <p className="text-white/60 text-[11px] sm:text-[12px] font-[450] leading-[12px] mb-3">
-          <span className="code">solar_aptitude</span> · {fmt(summary.rows_clean)} plantas · umbrales 0.4 y 0.6
-        </p>
-        <div>
-          <div className="relative">
-          <div className="flex items-end gap-[1.5px] h-[80px] sm:h-[100px]" role="img"
-            aria-label={`Histograma de solar_aptitude en ${BAR_HEIGHTS.length} intervalos de 0.03`}>
-            {BAR_HEIGHTS.map((h, i) => {
-              const lo = i * BIN;
-              const heightPercent = (h / maxHeight) * 100;
-              return (
-                <div
-                  key={i}
-                  title={`${lo.toFixed(2)}–${(lo + BIN).toFixed(2)}: ${fmt(h)} plantas`}
-                  className="flex-1 rounded-[0.5px] animate-bar-grow origin-bottom"
-                  style={{
-                    height: `${Math.max(heightPercent, 0.8)}%`,
-                    backgroundColor: CLASS_COLORS[classOf(lo + BIN / 2)],
-                    animationDelay: `${1100 + i * 30}ms`,
-                  }}
-                />
-              );
-            })}
-          </div>
-          <div className="absolute inset-0 pointer-events-none">
-            {[0.4, 0.6].map((t) => (
-              <div key={t} className="absolute top-0 bottom-0 w-px bg-white/30"
-                style={{ left: `${(t / (BIN * BAR_HEIGHTS.length)) * 100}%` }} />
-            ))}
-          </div>
-          </div>
-          <div className="flex justify-between mt-3">
-            {['0', '0.24', '0.48', '0.72', '0.96'].map((label, i) => (
-              <span key={i} className="text-[9px] sm:text-[10px] font-[450] leading-[10px] text-white/80">
-                {label}
-              </span>
-            ))}
-          </div>
-          <div className="flex gap-4 mt-4">
-            {summary.classes.map((c, i) => (
-              <span key={c} className="flex items-center gap-1.5 text-[11px] sm:text-[12px] text-white/70">
-                <span className="w-2 h-2 rounded-[2px]" style={{ background: CLASS_COLORS[i] }} />
-                {c}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+        </ol>
+      </nav>
     </Animate>
   );
 }
@@ -159,7 +110,7 @@ export default function Hero() {
                 </div>
               </Animate>
             </div>
-            <ResultsCard />
+            <AgendaCard />
           </div>
         </div>
       </div>
