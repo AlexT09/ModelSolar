@@ -40,7 +40,7 @@ Por eso evaluamos todo con bloques espaciales de 5° × 5°. Al partir los datos
 
 Con la advertencia espacial en mente, ajustamos los hiperparámetros con validación cruzada anidada: un bucle externo por bloques geográficos y un bucle interno que busca hiperparámetros.
 
-Comparamos modelos lineales (logística, Ridge, Lasso) con métodos más flexibles (KNN, SVM y, después, Random Forest y XGBoost). Para el desbalance de clases (Baja tiene solo el 3 %) probamos pesos en la función de costo, SMOTE y ADASYN. Los optimizadores fueron búsqueda en grilla, búsqueda aleatoria, Optuna y un algoritmo genético con una población de 6 individuos.
+Comparamos modelos lineales (logística, Ridge, Lasso) con métodos más flexibles (KNN, SVM y, después, Random Forest y XGBoost). Para el desbalance de clases (Baja tiene solo el 3 %) probamos `class_weight` (darle más peso a la clase pequeña en la función de costo), SMOTE y ADASYN. Los optimizadores fueron grid search, random search, optimización bayesiana (Optuna) y un algoritmo genético con una población de 6 individuos.
 
 ## 5. Resultados y métricas clave
 
@@ -64,7 +64,7 @@ En la base de Colombia pasa lo contrario. El factor de capacidad (FC) es casi pr
 
 ![Efecto de las técnicas de balanceo](fig_exp_balanceo.png)
 
-![Curvas de desempeño en cualquier momento](fig_exp_anytime.png)
+![Curvas de desempeño anytime](fig_exp_anytime.png)
 
 ![Evolución de la diversidad de la población genética (DEAP)](fig_exp_diversidad.png)
 
