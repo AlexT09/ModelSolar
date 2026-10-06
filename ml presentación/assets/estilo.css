@@ -1,0 +1,92 @@
+/* Estilo del libro. Misma paleta que la presentación: rojo y negro sobre fondo claro. */
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap");
+
+:root {
+  --myst-color-link: #A8101A;
+  --myst-color-link-hover: #C0141F;
+  --myst-color-link-underline: #E8898F;
+  --myst-color-active: #C0141F;
+  --myst-color-active-bg: rgba(192, 20, 31, 0.08);
+  --myst-color-active-surface: #FBEFEF;
+  --myst-color-primary: #C0141F;
+  --myst-color-primary-hover: #8F0F17;
+  --myst-color-focus-ring: #C0141F;
+  --myst-color-focus-outline: #F3D6D6;
+  --myst-color-accent-text: #7A0D14;
+  --myst-color-accent-surface: #FBEFEF;
+  --myst-color-accent-surface-border: #F3D6D6;
+  --myst-color-accent-surface-text: #7A0D14;
+}
+
+html.dark {
+  --myst-color-link: #FF8A92;
+  --myst-color-link-hover: #FFB3B8;
+  --myst-color-link-underline: #C0141F;
+  --myst-color-active: #FF8A92;
+  --myst-color-active-bg: rgba(255, 107, 115, 0.16);
+  --myst-color-active-surface: #2A1517;
+  --myst-color-primary: #FF6B73;
+  --myst-color-primary-hover: #FFB3B8;
+  --myst-color-focus-ring: #FF6B73;
+  --myst-color-focus-outline: #FF6B73;
+  --myst-color-accent-text: #FFD9DC;
+  --myst-color-accent-surface: #3A1A1D;
+  --myst-color-accent-surface-border: #7A0D14;
+  --myst-color-accent-surface-text: #FFD9DC;
+}
+
+/* Títulos con serif para darle carácter; el texto sigue en la fuente del tema */
+article h1,
+article h2,
+article h3 {
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  letter-spacing: -0.01em;
+}
+
+article h2 {
+  margin-top: 2.4rem;
+  padding-bottom: 0.3rem;
+  border-bottom: 2px solid var(--myst-color-primary);
+}
+
+/* Tablas de resultados: encabezado oscuro y filas con aire */
+article table th {
+  background: var(--myst-color-text);
+  color: var(--myst-color-bg);
+}
+
+html.dark article table th {
+  background: var(--myst-color-accent-surface);
+  color: var(--myst-color-accent-surface-text);
+}
+
+article table td,
+article table th {
+  padding: 0.5rem 0.75rem;
+}
+
+/* Tarjetas de la portada */
+article .myst-card {
+  border-top: 3px solid var(--myst-color-primary);
+  border-radius: 0.5rem;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+article a.myst-card:hover {
+  transform: translateY(-2px);
+}
+
+article .myst-card-title {
+  font-family: "Fraunces", Georgia, "Times New Roman", serif;
+  font-size: 1.05rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  article .myst-card {
+    transition: none;
+  }
+
+  article a.myst-card:hover {
+    transform: none;
+  }
+}

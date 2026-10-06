@@ -1,49 +1,78 @@
-# Libro del proyecto de aptitud solar fotovoltaica (Jupyter Book 2 / MyST).
-# Construir desde esta carpeta:  jupyter-book build --html   → queda en _build/html
-# Los cuadernos no se vuelven a ejecutar al construir: se publican con las salidas guardadas.
 version: 1
 project:
-  title: "Aptitud solar fotovoltaica: del índice del dataset a la generación real"
-  description: "Proyecto de Machine Learning, Universidad del Norte. EDA corregido, benchmark de modelos base, experimento de 140 combinaciones y línea de Colombia."
+  title: 'Aptitud solar fotovoltaica: del índice del dataset a la generación real'
+  description: Proyecto de Machine Learning, Universidad del Norte. EDA corregido, benchmark de modelos base, experimento de 140 combinaciones y línea de Colombia.
   authors:
     - name: Jesús David Arévalo Montilla
     - name: Enmanuel David Díaz Molinares
     - name: Alex David Terán Meza
-  keywords: [aptitud solar, fotovoltaica, validación espacial, optimización de hiperparámetros]
+  keywords:
+    - aptitud solar
+    - fotovoltaica
+    - validación espacial
+    - optimización de hiperparámetros
   license: CC-BY-NC-SA-4.0
   github: https://github.com/KrissV89/ModelSolar
+  thumbnail: proceso/fig_mapa_clases_e3.png
   bibliography:
     - proceso/referencias.bib
   exclude:
     - exposicion/**
     - resumen_de_sesion/**
     - entregas_anteriores/**
-    - "*.tex"
-    - "*.pdf"
+    - '*.tex'
+    - '*.pdf'
   toc:
     - file: index.md
+      title: Inicio
     - title: Datos y EDA
       children:
         - file: proceso/EDA_Corregido(Entregable 3).ipynb
+          title: EDA corregido
     - title: Modelos base
       children:
         - file: proceso/Benchmark_Modelos_Base.ipynb
+          title: Benchmark de modelos base
     - title: Experimento de 140 combinaciones
       children:
         - file: proceso/Experimento_1_Diseno.ipynb
+          title: 1. Diseño
         - file: proceso/Experimento_2_Clasificacion.ipynb
+          title: 2. Clasificación
         - file: proceso/Experimento_3_Regresion.ipynb
+          title: 3. Regresión
         - file: proceso/Experimento_4_Optimizadores.ipynb
+          title: 4. Optimizadores
         - file: proceso/Experimento_5_Computacional.ipynb
+          title: 5. Optimización computacional
         - file: proceso/Experimento_6_Estadistica.ipynb
+          title: 6. Estadística formal
         - file: proceso/Experimento_7_Interpretabilidad.ipynb
-    - title: Línea de Colombia (clima y generación real)
+          title: 7. Interpretabilidad
+    - title: Línea de Colombia
       children:
         - file: proceso/Clima_a_Generacion_Colombia.ipynb
+          title: Clima y generación real
         - file: proceso/Benchmark_Colombia.ipynb
+          title: Benchmark de Colombia
     - title: Resumen final
       children:
         - file: proceso/Resumen_final.md
+          title: Resumen del proyecto
         - file: proceso/Resumen_Final.ipynb
+          title: Cuadros del experimento
 site:
   template: book-theme
+  options:
+    logo: assets/logo.svg
+    logo_dark: assets/logo-oscuro.svg
+    logo_text: Aptitud solar fotovoltaica
+    logo_alt: Sol sobre un panel solar
+    favicon: assets/favicon.svg
+    style: assets/estilo.css
+    hide_authors: true
+  actions:
+    - title: Código en GitHub
+      url: https://github.com/KrissV89/ModelSolar
+  parts:
+    footer: assets/pie.md
