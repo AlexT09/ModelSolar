@@ -29,7 +29,7 @@ Por eso todos los modelos se validan con bloques espaciales de 5° × 5°: un bl
 
 ## Reproducir
 
-El entorno está en `proceso/environment.yml` (`conda env create -f environment.yml`). Las 140 combinaciones se corren con
-`python correr_experimento.py` desde `proceso/`; la corrida se puede interrumpir y relanzar sin perder lo hecho. La semilla es 42 en todo.
+Para correr los cuadernos se usa el entorno de conda definido en `environment.yml` (`conda env create -f environment.yml`). Todos los cuadernos tienen guardadas sus salidas y gráficas. La semilla usada en los experimentos es 42.
 
 El dataset original tiene licencia CC BY-NC-SA 4.0 (Mantilla-Guerra et al., 2026).
+
