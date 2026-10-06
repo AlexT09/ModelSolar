@@ -83,13 +83,26 @@ export function Section({ id, kicker, title, summary, stats, tabs, after }: {
 }
 
 // Separador de cada línea de trabajo
-export function LineHeader({ id, label, title, text }: { id: string; label: string; title: string; text: string }) {
+export function LineHeader({ id, label, title, text, tasks }: {
+  id: string;
+  label: string;
+  title: string;
+  text: ReactNode;
+  tasks: { text: ReactNode; source: string };
+}) {
   return (
     <div id={id} className="scroll-mt-16 border-t border-white/[0.06] bg-white/[0.02]">
-      <div className={`${CONTAINER} py-14 sm:py-20`}>
-        <p className="text-white/45 text-[13px] mb-3">{label}</p>
-        <p className="text-white text-[34px] sm:text-[56px] md:text-[64px] leading-[1] max-w-[1100px]">{title}</p>
-        <p className="text-white/65 text-[16px] sm:text-[18px] leading-[1.5] max-w-[760px] mt-6">{text}</p>
+      <div className={`${CONTAINER} py-14 sm:py-20 grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end`}>
+        <div>
+          <p className="text-white/45 text-[13px] mb-3">{label}</p>
+          <p className="text-white text-[34px] sm:text-[56px] md:text-[64px] leading-[1]">{title}</p>
+          <div className="text-white/65 text-[16px] sm:text-[18px] leading-[1.5] max-w-[760px] mt-6">{text}</div>
+        </div>
+        <div className="glass p-5 sm:p-6">
+          <p className="text-white/50 text-[13px] mb-3">Qué se predice</p>
+          {tasks.text}
+          <p className="text-white/35 text-[11px] font-mono mt-3">{tasks.source}</p>
+        </div>
       </div>
     </div>
   );

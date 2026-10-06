@@ -46,37 +46,50 @@ export function NbImage({ name, alt }: { name: string; alt: string }) {
   );
 }
 
-function CellView({ nb, cell }: { nb: NbKey; cell: Cell }) {
+// Una celda completa (su índice) o solo algunas de sus salidas de texto. Las imágenes de la celda se
+// muestran salvo que img sea false.
+export type Pick = number | { i: number; out?: number[]; img?: boolean };
+
+function CellView({ nb, cell, pick }: { nb: NbKey; cell: Cell; pick: Pick }) {
   if (cell.md !== undefined) return <Md text={cell.md} />;
+  const outs = typeof pick === 'object' && pick.out ? pick.out.map((k) => cell.out?.[k]).filter(Boolean) as string[] : cell.out ?? [];
+  const showImg = typeof pick === 'number' || pick.img !== false;
   return (
     <div className="space-y-3">
-      {cell.out?.map((t, k) => <Output key={k} text={t} />)}
-      {cell.img?.map((name) => (
+      {outs.map((t, k) => <Output key={k} text={t} />)}
+      {showImg && cell.img?.map((name) => (
         <NbImage key={name} name={name} alt={`Figura de ${nbFile(nb)}, celda ${cell.i}`} />
       ))}
     </div>
   );
 }
 
-// Un tramo de celdas de un cuaderno, en orden, con la referencia a su origen.
-export function Cells({ nb, from, to, skip = [] }: { nb: NbKey; from: number; to: number; skip?: number[] }) {
-  const cells = cellsIn(nb, from, to, skip).filter((c) => !/^##\s+Referencias/m.test(c.md ?? ''));
+// Las celdas elegidas de un cuaderno, en orden, con la referencia a su origen y el enlace al cuaderno.
+export function Cells({ nb, picks }: { nb: NbKey; picks: Pick[] }) {
+  const ids = picks.map((p) => (typeof p === 'number' ? p : p.i));
   return (
     <div className="space-y-5 max-w-[960px]">
-      {cells.map((c) => <CellView key={c.i} nb={nb} cell={c} />)}
-      <Source nb={nb} from={from} to={to} />
+      {picks.map((p) => {
+        const i = typeof p === 'number' ? p : p.i;
+        const cell = cellsIn(nb, i, i)[0];
+        if (!cell) throw new Error(`${nb}[${i}] no tiene contenido`);
+        return <CellView key={i} nb={nb} cell={cell} pick={p} />;
+      })}
+      <Source nb={nb} cells={ids} />
     </div>
   );
 }
 
-export function Source({ nb, from, to }: { nb: NbKey; from?: number; to?: number }) {
+export function Source({ nb, from, to, cells }: { nb: NbKey; from?: number; to?: number; cells?: number[] }) {
+  const range = cells
+    ? `, celdas ${cells.join(', ')}`
+    : from !== undefined ? `, celdas ${from}${to !== undefined && to !== from ? ` a ${to}` : ''}` : '';
   return (
-    <p className="text-white/40 text-[12px] font-mono pt-2">
-      Fuente:{' '}
-      <a href={nbUrl(nb)} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-white">
-        {nbFile(nb)}
+    <p className="text-white/40 text-[12px] font-mono pt-2 leading-[1.7]">
+      Fuente: {nbFile(nb)}{range}.{' '}
+      <a href={nbUrl(nb)} target="_blank" rel="noreferrer" className="underline underline-offset-4 hover:text-white whitespace-nowrap">
+        Ver el cuaderno completo
       </a>
-      {from !== undefined && `, celdas ${from}${to !== undefined && to !== from ? ` a ${to}` : ''}`}
     </p>
   );
 }

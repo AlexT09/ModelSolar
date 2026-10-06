@@ -1,4 +1,4 @@
-import { Cells, Md, References } from '@/components/Notebook';
+import { Cells, Md, References, type Pick } from '@/components/Notebook';
 import { Section, type Tab } from '@/components/Section';
 import { mdCell, resumenMd, type NbKey } from '@/lib/notebooks';
 
@@ -18,19 +18,18 @@ function Summary({ text, source }: { text: string; source: string }) {
   );
 }
 
-const cells = (label: string, nb: NbKey, from: number, to: number, skip: number[] = []): Tab => ({
+// Cada pestaña muestra solo las celdas que sostienen el objetivo de la sección: qué se hizo,
+// el resultado principal y la interpretación del cuaderno. El resto queda en el cuaderno enlazado.
+const tab = (label: string, nb: NbKey, picks: Pick[]): Tab => ({
   label,
-  content: <Cells nb={nb} from={from} to={to} skip={skip} />,
+  content: <Cells nb={nb} picks={picks} />,
 });
-
-// Las celdas 1 de los experimentos 2 a 7 repiten el esquema del flujo, que ya se muestra en el diseño.
-const FLUJO = [1];
 
 export function ModelosBase() {
   return (
     <Section
       id="modelos-base"
-      kicker="Línea 1 · Auditar el índice"
+      kicker="Línea 1 · Predecir el índice de aptitud"
       title="2. Modelos base sobre la base mundial"
       summary={<Summary text={para('benchmark', 22, 'Los contrastes')} source="Benchmark_Modelos_Base.ipynb, celda 22" />}
       stats={[
@@ -40,12 +39,12 @@ export function ModelosBase() {
         { value: '< 0', label: 'R² de todos los modelos con una región fuera', source: 'Benchmark, celda 10' },
       ]}
       tabs={[
-        cells('Diseño', 'benchmark', 0, 3),
-        cells('Cuatro escenarios', 'benchmark', 5, 8),
-        cells('Región fuera', 'benchmark', 9, 11),
-        cells('Ajuste anidado', 'benchmark', 12, 16),
-        cells('Gráficas', 'benchmark', 17, 21),
-        cells('Conclusiones', 'benchmark', 22, 22),
+        tab('Diseño', 'benchmark', [0, 1, 2]),
+        tab('Con y sin ubicación', 'benchmark', [5, 6, { i: 8, out: [0] }, 21]),
+        tab('Región fuera', 'benchmark', [9, 10, 11]),
+        tab('Ajuste anidado', 'benchmark', [12, 15, { i: 16, out: [7] }]),
+        tab('Gráficas', 'benchmark', [18, 19, 20]),
+        tab('Conclusiones', 'benchmark', [22]),
       ]}
       after={<References items={[{ nb: 'benchmark', i: 23 }]} />}
     />
@@ -56,7 +55,7 @@ export function Experimento() {
   return (
     <Section
       id="experimento"
-      kicker="Línea 1 · Auditar el índice"
+      kicker="Línea 1 · Predecir el índice de aptitud"
       title="3. Experimento de 140 combinaciones"
       summary={<Summary text={para('exp2', 19, 'Los tres modelos')} source="Experimento_2_Clasificacion.ipynb, celda 19" />}
       stats={[
@@ -66,13 +65,13 @@ export function Experimento() {
         { value: '0.149', label: 'importancia |SHAP| de la longitud, la mayor', source: 'Experimento 7, celda 4' },
       ]}
       tabs={[
-        cells('Diseño', 'exp1', 0, 15),
-        cells('Clasificación', 'exp2', 0, 19, FLUJO),
-        cells('Regresión', 'exp3', 0, 14, FLUJO),
-        cells('Optimizadores', 'exp4', 0, 20, FLUJO),
-        cells('Costo computacional', 'exp5', 0, 24),
-        cells('Estadística formal', 'exp6', 0, 19, FLUJO),
-        cells('Interpretabilidad', 'exp7', 0, 11, FLUJO),
+        tab('Diseño', 'exp1', [0, 1, 2, 3, { i: 4, out: [1] }, 5, 10, 11, { i: 15, out: [0] }]),
+        tab('Clasificación', 'exp2', [0, 6, 7, 8, 9, 12, 13, 14, 16, 19]),
+        tab('Regresión', 'exp3', [0, 5, 6, 9, 10, 12, 13, 14]),
+        tab('Optimizadores', 'exp4', [0, 3, 4, 10, 11, 12, { i: 13, out: [0] }, 14, { i: 15, out: [] }, 20]),
+        tab('Costo computacional', 'exp5', [0, 5, 22, 23, 24]),
+        tab('Estadística formal', 'exp6', [0, 3, 4, 5, 6, 8, 9, 12, 13, 19]),
+        tab('Interpretabilidad', 'exp7', [0, 3, 4, 9, 10, 11]),
       ]}
       after={
         <References items={[
@@ -88,7 +87,7 @@ export function BaseColombia() {
   return (
     <Section
       id="colombia"
-      kicker="Línea 2 · Generación real"
+      kicker="Línea 2 · Predecir la generación diaria"
       title="4. Base de generación real en Colombia"
       summary={<Summary text={para('clima', 0, 'Pregunta:')} source="Clima_a_Generacion_Colombia.ipynb, celda 0" />}
       stats={[
@@ -98,11 +97,10 @@ export function BaseColombia() {
         { value: '2024–2026', label: 'del 1 de enero de 2024 al 28 de febrero de 2026', source: 'Clima, celda 22' },
       ]}
       tabs={[
-        cells('Pregunta y fuentes', 'clima', 0, 3),
-        cells('Generación y factor de capacidad', 'clima', 4, 9),
-        cells('Emparejamiento de plantas', 'clima', 10, 14),
-        cells('Clima por hora', 'clima', 15, 18),
-        cells('Tabla diaria y su EDA', 'clima', 19, 30),
+        tab('Pregunta y fuentes', 'clima', [0, 1, 2]),
+        tab('Factor de capacidad', 'clima', [4, 8, { i: 9, out: [0] }]),
+        tab('Ubicación y clima', 'clima', [10, { i: 12, out: [0] }, 15, 17]),
+        tab('Tabla diaria y su EDA', 'clima', [19, 20, 21, { i: 22, out: [0] }, 26, 27, 29, { i: 30, out: [0] }]),
       ]}
     />
   );
@@ -112,7 +110,7 @@ export function QueExplicaElClima() {
   return (
     <Section
       id="clima"
-      kicker="Línea 2 · Generación real"
+      kicker="Línea 2 · Predecir la generación diaria"
       title="5. Qué explica el clima de la generación diaria"
       summary={<Summary text={resumenMd['5. Resultados y métricas clave'].split(/\n\s*\n/)[1]} source="Resumen_final.md, sección 5" />}
       stats={[
@@ -122,16 +120,15 @@ export function QueExplicaElClima() {
         { value: '0.469', label: 'R² de Lasso ajustado, el mejor modelo base', source: 'Benchmark Colombia, celda 7' },
       ]}
       tabs={[
-        cells('Antes de modelar', 'clima', 31, 35),
-        cells('Resultados 9.1 a 9.5', 'clima', 36, 49),
-        cells('Modelos preliminares', 'clima', 50, 53),
-        cells('Modelos base de Colombia', 'benchmark_col', 0, 17),
+        tab('Antes de modelar', 'clima', [31, { i: 32, out: [] }, 33, 34]),
+        tab('Cuánto explica el clima', 'clima', [36, { i: 37, out: [0, 1] }, 38, 48, 49]),
+        tab('Modelos base', 'benchmark_col', [0, 1, 2, 6, { i: 7, out: [0] }, 9, { i: 10, out: [0] }, 12, 13, 14, 15, 16]),
         {
           label: 'Conclusiones',
           content: (
             <div className="space-y-10">
-              <Cells nb="clima" from={54} to={54} />
-              <Cells nb="benchmark_col" from={18} to={18} />
+              <Cells nb="clima" picks={[54]} />
+              <Cells nb="benchmark_col" picks={[18]} />
             </div>
           ),
         },
@@ -146,7 +143,6 @@ const RESUMEN_TABS = [
   ['Resultados y métricas clave', '5. Resultados y métricas clave'],
   ['Pruebas estadísticas', '6. Las pruebas estadísticas'],
   ['Interpretabilidad y rendimiento', '7. Qué aprendimos sobre los modelos (interpretabilidad y rendimiento)'],
-  ['Diseño experimental', '4. Diseño experimental'],
 ] as const;
 
 export function Cierre() {

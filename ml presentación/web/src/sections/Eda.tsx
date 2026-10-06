@@ -172,7 +172,7 @@ const tabs = [
             </p>
           </Card>
         </div>
-        <Cells nb="eda" from={68} to={72} />
+        <Cells nb="eda" picks={[68, 69, 70]} />
         <div>
           <H>7. Análisis bivariado corregido</H>
           <Grid2>
@@ -316,7 +316,7 @@ export default function Eda() {
   return (
     <Section
       id="eda"
-      kicker="Línea 1 · Auditar el índice"
+      kicker="Línea 1 · Predecir el índice de aptitud"
       title="1. Datos y EDA: qué mide el índice"
       summary={<Md text={resumenMd['3. Qué mide el índice global'].split('\n\n')[0]} className="!text-[17px] sm:!text-[19px] !text-white/80" />}
       stats={[

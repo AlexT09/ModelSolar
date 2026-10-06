@@ -4,11 +4,17 @@ import { CONTAINER, LineHeader } from '@/components/Section';
 import Apertura from '@/sections/Apertura';
 import Eda from '@/sections/Eda';
 import { BaseColombia, Cierre, Experimento, ModelosBase, QueExplicaElClima } from '@/sections/Procesos';
+import { Md } from '@/components/Notebook';
+import { mdCell } from '@/lib/notebooks';
 import { COURSE } from '@/content';
 
 // Las dos líneas de trabajo, con el texto literal de Resumen_final.md, sección 1
 const LINEA_1 = 'Modelar el índice topográfico del dataset global para evaluar su generalización espacial.';
 const LINEA_2 = 'Construir una base propia con generación real de plantas colombianas para ver cuánto influye el clima.';
+
+// Las tareas de cada línea: la lista con viñetas de la celda 0 de cada benchmark
+const tareas = (nb: 'benchmark' | 'benchmark_col') =>
+  mdCell(nb, 0).split(/\n\s*\n/).find((p) => p.trim().startsWith('- '))!;
 
 export default function App() {
   return (
@@ -19,12 +25,16 @@ export default function App() {
       <main>
         <Apertura />
 
-        <LineHeader id="linea-1" label="Línea 1" title="Auditar el índice" text={LINEA_1} />
+        <LineHeader id="linea-1" label="Línea 1 · Auditar el índice" title="Predecir el índice de aptitud solar"
+          text={LINEA_1}
+          tasks={{ text: <Md text={tareas('benchmark')} />, source: 'Benchmark_Modelos_Base.ipynb, celda 0' }} />
         <Eda />
         <ModelosBase />
         <Experimento />
 
-        <LineHeader id="linea-2" label="Línea 2" title="Generación real en Colombia" text={LINEA_2} />
+        <LineHeader id="linea-2" label="Línea 2 · Generación real" title="Predecir la generación diaria en Colombia"
+          text={LINEA_2}
+          tasks={{ text: <Md text={tareas('benchmark_col')} />, source: 'Benchmark_Colombia.ipynb, celda 0' }} />
         <BaseColombia />
         <QueExplicaElClima />
 
