@@ -12,7 +12,7 @@ project:
     - validación espacial
     - optimización de hiperparámetros
   license: CC-BY-NC-SA-4.0
-  github: https://github.com/KrissV89/ModelSolar
+  github: https://github.com/AlexT09/ModelSolar
   thumbnail: proceso/fig_mapa_clases_e3.png
   bibliography:
     - proceso/referencias.bib
@@ -73,7 +73,7 @@ site:
     hide_authors: true
   actions:
     - title: Código en GitHub
-      url: https://github.com/KrissV89/ModelSolar
+      url: https://github.com/AlexT09/ModelSolar
   parts:
     footer: assets/pie.md
     primary_sidebar_footer: assets/barra-lateral.md

@@ -6,7 +6,7 @@ Proyecto de Machine Learning sobre aptitud solar fotovoltaica y predicción de g
 **Profesor:** Dr. Lihki Rubio  
 **Programa:** Ciencia de Datos, Universidad del Norte  
 
-Libro web del proyecto: [https://krissv89.github.io/ModelSolar/](https://krissv89.github.io/ModelSolar/)
+Libro web del proyecto: [https://alext09.github.io/ModelSolar/](https://alext09.github.io/ModelSolar/)
 
 ---
 

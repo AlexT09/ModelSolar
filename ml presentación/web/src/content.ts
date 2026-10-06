@@ -2,7 +2,7 @@
 // El número entre corchetes es el índice de la celda de origen. No se reescriben ni se resumen.
 
 export const NOTEBOOK_URL =
-  'https://github.com/KrissV89/ModelSolar/blob/main/ml%20presentaci%C3%B3n/proceso/EDA_Corregido(Entregable%203).ipynb';
+  'https://github.com/AlexT09/ModelSolar/blob/main/ml%20presentaci%C3%B3n/proceso/EDA_Corregido(Entregable%203).ipynb';
 
 // [0]
 export const TITLE = 'EDA corregido: aptitud solar fotovoltaica (Entrega 3)';
