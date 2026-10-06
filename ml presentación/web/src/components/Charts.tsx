@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { CLASS_COLORS, FOLD_COLORS, fmt, summary } from '@/lib/data';
+import type { NbKey } from '@/lib/notebooks';
+import { Raw } from './Notebook';
 
 const CLASSES = summary.classes;
 
@@ -77,7 +79,11 @@ export function RegionComposition() {
   );
 }
 
-export function HBars({ rows, color }: { rows: { label: string; value: number }[]; color: string }) {
+export function HBars({ rows, color, format = fmt }: {
+  rows: { label: string; value: number }[];
+  color: string;
+  format?: (v: number) => string;
+}) {
   const max = Math.max(...rows.map((r) => r.value));
   return (
     <div className="space-y-2">
@@ -88,7 +94,7 @@ export function HBars({ rows, color }: { rows: { label: string; value: number }[
             <div className="h-full rounded-r-[4px] group-hover:brightness-125"
               style={{ width: `${(r.value / max) * 100}%`, background: color }} />
           </div>
-          <span className="text-[13px] text-white/85 tabular-nums text-right">{fmt(r.value)}</span>
+          <span className="text-[13px] text-white/85 tabular-nums text-right">{format(r.value)}</span>
         </div>
       ))}
     </div>
@@ -125,6 +131,49 @@ export function SpearmanBars() {
         <span />
       </div>
       <Legend items={[{ label: 'r positivo', color: POS }, { label: 'r negativo', color: NEG }]} />
+    </div>
+  );
+}
+
+// Tabla de presentación con valores tomados de una salida de cuaderno. La fila `best` se resalta.
+export function DataTable({ title, columns, rows, best, source, note, raw }: {
+  title?: string;
+  columns: string[];
+  rows: (string | number)[][];
+  best?: number;
+  source: string;
+  note?: string;
+  raw?: { nb: NbKey; outs: [number, number][] };
+}) {
+  const isNum = (v: string | number) => typeof v === 'number' || /^[−\-+<]?\s?[\d.,]+(\s?[±→%s].*)?$/.test(String(v));
+  return (
+    <div>
+      {title && <p className="text-white text-[15px] sm:text-[16px] font-[450] mb-3">{title}</p>}
+      <div className="overflow-x-auto rounded-[14px] border border-white/[0.08]">
+        <table className="w-full text-[13px] sm:text-[14px] tabular-nums">
+          <thead>
+            <tr className="bg-white/[0.04] text-white/55">
+              {columns.map((c, k) => (
+                <th key={c} className={`font-[450] px-3 sm:px-4 py-2.5 whitespace-nowrap ${k === 0 ? 'text-left' : 'text-right'}`}>{c}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr key={i} className={`border-t border-white/[0.06] ${best === i ? 'bg-white/[0.06] text-white' : 'text-white/80'}`}>
+                {r.map((v, k) => (
+                  <td key={k} className={`px-3 sm:px-4 py-2 whitespace-nowrap ${k === 0 ? 'text-left' : isNum(v) ? 'text-right' : 'text-right text-white/60'} ${best === i && k === 0 ? 'font-[600]' : ''}`}>
+                    {typeof v === 'number' ? v.toString() : v}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {note && <p className="text-white/50 text-[12px] mt-2">{note}</p>}
+      <p className="text-white/35 text-[11px] font-mono mt-2">{source}</p>
+      {raw && <Raw nb={raw.nb} outs={raw.outs} />}
     </div>
   );
 }

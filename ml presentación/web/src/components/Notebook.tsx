@@ -94,6 +94,29 @@ export function Source({ nb, from, to, cells }: { nb: NbKey; from?: number; to?:
   );
 }
 
+// La salida original de una o más celdas, plegada debajo de la tabla limpia que se armó con ella.
+export function Raw({ nb, outs }: { nb: NbKey; outs: [number, number][] }) {
+  return (
+    <details className="mt-3 group">
+      <summary className="cursor-pointer select-none text-[13px] text-white/60 hover:text-white underline underline-offset-4 decoration-white/30 w-fit">
+        Ver la salida del cuaderno
+      </summary>
+      <div className="mt-3 space-y-3">
+        {outs.map(([i, k]) => {
+          const text = cellsIn(nb, i, i)[0]?.out?.[k];
+          if (!text) throw new Error(`${nb}[${i}] no tiene la salida ${k}`);
+          return (
+            <div key={`${i}-${k}`}>
+              <p className="text-white/35 text-[11px] font-mono mb-1">celda {i}</p>
+              <pre className="output">{text}</pre>
+            </div>
+          );
+        })}
+      </div>
+    </details>
+  );
+}
+
 // La síntesis que el equipo escribió en Resumen_Final.ipynb para un tema, sin su encabezado.
 export function Synthesis({ i }: { i: number }) {
   const cell = cellsIn('resumen', i, i)[0];

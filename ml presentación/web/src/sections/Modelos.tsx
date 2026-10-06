@@ -1,11 +1,14 @@
-import { Cells, Md, NbImage, References, Source, Synthesis } from '@/components/Notebook';
+import type { ReactNode } from 'react';
+import { Md, NbImage, Raw, References, Source, Synthesis } from '@/components/Notebook';
+import { DataTable, HBars } from '@/components/Charts';
 import { Section } from '@/components/Section';
 import { mdCell, type NbKey } from '@/lib/notebooks';
+import * as R from '@/results';
 import { paras, sentences, Summary } from './Datos';
 
 const BASE = import.meta.env.BASE_URL;
 
-// Párrafo literal de una celda de markdown, ubicado por su comienzo.
+// Párrafos literales de una celda de markdown, ubicados por su comienzo.
 function para(nb: NbKey, i: number, start: string) {
   const p = mdCell(nb, i).split(/\n\s*\n/).find((x) => x.trim().startsWith(start));
   if (!p) throw new Error(`${nb}[${i}] no tiene un párrafo que empiece con "${start}"`);
@@ -15,8 +18,30 @@ function para(nb: NbKey, i: number, start: string) {
 // Primer párrafo de una celda de Resumen_Final.ipynb, sin su encabezado
 const resumenFirst = (i: number) => mdCell('resumen', i).replace(/^#+\s.*\n+/, '').split(/\n\s*\n/)[0].trim();
 
-function Stack({ children }: { children: React.ReactNode }) {
-  return <div className="space-y-8">{children}</div>;
+function Stack({ children }: { children: ReactNode }) {
+  return <div className="space-y-10 max-w-[1100px]">{children}</div>;
+}
+
+// Interpretación del cuaderno, con su origen
+function Reading({ nb, i, starts }: { nb: NbKey; i: number; starts: string[] }) {
+  return (
+    <div className="max-w-[960px]">
+      <p className="text-white/50 text-[12px] mb-3">Interpretación del cuaderno</p>
+      <div className="space-y-4">
+        {starts.map((s) => <Md key={s} text={para(nb, i, s)} />)}
+      </div>
+      <Source nb={nb} cells={[i]} />
+    </div>
+  );
+}
+
+function Fig({ name, alt, caption }: { name: string; alt: string; caption: string }) {
+  return (
+    <figure className="max-w-[1100px]">
+      <NbImage name={name} alt={alt} />
+      <figcaption className="text-white/45 text-[12px] mt-2">{caption}</figcaption>
+    </figure>
+  );
 }
 
 // Resumen_final.md §5, primer párrafo: resultados de la base mundial
@@ -39,25 +64,44 @@ export function Modelos() {
         { value: '< 0', label: 'R² de todos los modelos base al predecir una región que no vieron', source: 'Benchmark, celda 10' },
       ]}
       visual={
-        <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:gap-14 items-start">
-          <div>
-            <Md text={mdCell('exp1', 2)} />
-            <Source nb="exp1" cells={[2]} />
+        <div className="space-y-12">
+          <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:gap-14 items-start">
+            <div>
+              <Md text={mdCell('exp1', 2)} />
+              <Source nb="exp1" cells={[2]} />
+            </div>
+            <a href={`${BASE}figs/fig_pipeline_experimento.png`} target="_blank" rel="noreferrer" className="block rounded-[16px] bg-white p-2 sm:p-3">
+              <img src={`${BASE}figs/fig_pipeline_experimento.png`} alt="Flujo del experimento de 140 combinaciones" loading="lazy" className="w-full h-auto" />
+            </a>
           </div>
-          <a href={`${BASE}figs/fig_pipeline_experimento.png`} target="_blank" rel="noreferrer" className="block rounded-[16px] bg-white p-2 sm:p-3">
-            <img src={`${BASE}figs/fig_pipeline_experimento.png`} alt="Flujo del experimento de 140 combinaciones" loading="lazy" className="w-full h-auto" />
-          </a>
+          <div className="max-w-[1100px]">
+            <DataTable title="Resultados de los 7 modelos de cada tarea, con su mejor combinación" {...R.SUMMARY} best={0} />
+          </div>
         </div>
       }
       tabs={[
+        {
+          label: 'Modelos base',
+          content: (
+            <Stack>
+              <DataTable title="Clasificación: F1 macro en cuatro escenarios" {...R.BASE_F1} best={0} />
+              <DataTable title="Regresión: R² en cuatro escenarios" {...R.BASE_R2} best={0} />
+              <DataTable title="Regresión: R² con una macrorregión fuera del entrenamiento" {...R.BASE_LORO}
+                note={mdCell('benchmark', 11).replace(/\s*\n\s*/g, ' ')} />
+              <Reading nb="benchmark" i={22} starts={['Los contrastes', 'Los modelos lineales']} />
+            </Stack>
+          ),
+        },
         {
           label: 'Clasificación',
           content: (
             <Stack>
               <Synthesis i={12} />
-              <Cells nb="exp2" picks={[6, 7, 8, 9]} />
+              <DataTable title="Mejor combinación de cada modelo" {...R.CLF_BEST} best={0} />
+              <Fig name="exp2_9_0.png" alt="Matriz de confusión de cada modelo"
+                caption="Matriz de confusión de cada modelo, normalizada por fila (Experimento 2, celda 9)" />
               <Synthesis i={6} />
-              <Cells nb="exp2" picks={[12, 13, 19]} />
+              <Reading nb="exp2" i={19} starts={['El balanceo no mejoró', 'Los árboles salen bien calibrados']} />
             </Stack>
           ),
         },
@@ -66,12 +110,15 @@ export function Modelos() {
           content: (
             <Stack>
               <Synthesis i={14} />
-              <Cells nb="exp3" picks={[5, 6, 9, 10, 14]} />
+              <DataTable title="Mejor combinación de cada modelo" {...R.REG_BEST} best={0} />
+              <Fig name="exp3_10_0.png" alt="Residuos del mejor modelo de regresión"
+                caption="Residuos de Random Forest con las predicciones fuera de pliegue (Experimento 3, celda 10)" />
+              <Reading nb="exp3" i={14} starts={['Random Forest es el mejor', 'Los residuos de Random Forest']} />
             </Stack>
           ),
         },
       ]}
-      after={<References items={[{ nb: 'exp2', i: 20 }, { nb: 'exp3', i: 15 }]} />}
+      after={<References items={[{ nb: 'benchmark', i: 23 }, { nb: 'exp2', i: 20 }, { nb: 'exp3', i: 15 }]} />}
     />
   );
 }
@@ -102,14 +149,20 @@ export function Optimizacion() {
       tabs={[
         {
           label: 'Optimizadores',
-          content: <Cells nb="exp4" picks={[3, 4, 12, { i: 13, out: [0] }, 14, { i: 15, out: [] }, 20]} />,
+          content: (
+            <Stack>
+              <DataTable title="Los cuatro optimizadores con el mismo presupuesto de 30 evaluaciones" {...R.OPTIMIZERS} best={0} />
+              <Reading nb="exp4" i={20} starts={['Con 30 evaluaciones', 'Por unidad de presupuesto', 'La genética, con población']} />
+            </Stack>
+          ),
         },
         {
           label: 'Costo computacional',
           content: (
             <Stack>
               <Synthesis i={10} />
-              <Cells nb="exp5" picks={[22, 23, 24]} />
+              <DataTable title="Modelo estándar frente a optimizado" {...R.STD_VS_OPT} />
+              <Reading nb="exp5" i={24} starts={['En la tabla de estándar']} />
             </Stack>
           ),
         },
@@ -149,7 +202,11 @@ export function Conclusiones() {
           content: (
             <Stack>
               <Synthesis i={16} />
-              <Cells nb="exp6" picks={[3, 4, 8, 9, 12, 13]} />
+              <div className="grid gap-8 xl:grid-cols-[1.3fr_1fr]">
+                <DataTable title="Clasificación: DeLong entre los finalistas" {...R.DELONG} />
+                <DataTable title="Regresión: conjunto de confianza de modelos" {...R.MCS} best={0} />
+              </div>
+              <Reading nb="exp6" i={19} starts={['En regresión']} />
             </Stack>
           ),
         },
@@ -158,7 +215,18 @@ export function Conclusiones() {
           content: (
             <Stack>
               <Synthesis i={18} />
-              <Cells nb="exp7" picks={[3, 4, 9, 10, 11]} />
+              <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr] items-start">
+                <div>
+                  <p className="text-white text-[15px] sm:text-[16px] font-[450] mb-4">Importancia media |SHAP|, Random Forest de clasificación</p>
+                  <HBars color="#3987e5" format={(v) => v.toFixed(4)}
+                    rows={R.SHAP_CLF.rows.map(([label, value]) => ({ label, value }))} />
+                  <p className="text-white/35 text-[11px] font-mono mt-3">{R.SHAP_CLF.source}</p>
+                  <Raw nb={R.SHAP_CLF.raw.nb} outs={R.SHAP_CLF.raw.outs} />
+                </div>
+                <Fig name="exp7_4_0.png" alt="SHAP global en clasificación"
+                  caption="Diagrama de enjambre SHAP para la clase Baja (Experimento 7, celda 4)" />
+              </div>
+              <Reading nb="exp7" i={11} starts={['La hipótesis de partida', 'LIME y SHAP']} />
             </Stack>
           ),
         },
