@@ -2,8 +2,8 @@ import { useState, type ReactNode } from 'react';
 import Prose, { Inline } from '@/components/Prose';
 import WorldMap, { Chip } from '@/components/WorldMap';
 import SlopeScatter from '@/components/SlopeScatter';
-import { ClassBeforeAfter, FoldTable, RegionComposition } from '@/components/Charts';
-import { Md, Output, References, Source } from '@/components/Notebook';
+import { ClassBeforeAfter, FoldTable, HBars, RegionComposition, SpearmanBars } from '@/components/Charts';
+import { Cells, Md, NbImage, Output, References, Source } from '@/components/Notebook';
 import { Section } from '@/components/Section';
 import { fmt, summary, usePoints, type Points } from '@/lib/data';
 import { resumenMd } from '@/lib/notebooks';
@@ -174,6 +174,44 @@ export function Eda() {
       }
       tabs={[
         {
+          label: 'Variables',
+          content: (
+            <div className="space-y-12">
+              <Cells nb="eda" picks={[68, 69, 70, 71, 72]} />
+              <div>
+                <h3 className="text-white text-[20px] sm:text-[24px] font-normal mb-5">7. Análisis bivariado corregido</h3>
+                <Grid2>
+                  <div className="space-y-6">
+                    <Prose text={C.BIVAR_A} />
+                    <Prose text={C.BIVAR_B} />
+                    <NbImage name="eda_74_0.png" alt="Matriz de correlación de Spearman" />
+                  </div>
+                  <Card title={<>Spearman con <span className="code">solar_aptitude</span></>}>
+                    <SpearmanBars />
+                  </Card>
+                </Grid2>
+              </div>
+              <div>
+                <h3 className="text-white text-[20px] sm:text-[24px] font-normal mb-5">8. Factor de inflación de varianza</h3>
+                <Grid2>
+                  <div className="space-y-6">
+                    <Prose text={C.VIF_A} />
+                    <Prose text={C.VIF_B} />
+                  </div>
+                  <Card title="n = 57,976 casos completos">
+                    <HBars color="#3987e5"
+                      rows={C.VIF_TABLE.filter(([v]) => v !== 'const').map(([label, value]) => ({ label, value: +value.toFixed(3) }))} />
+                    <p className="text-white/45 text-[12px] mt-4">
+                      <span className="code">const</span> = {C.VIF_TABLE[0][1].toFixed(3)} (fuera de la escala)
+                    </p>
+                  </Card>
+                </Grid2>
+              </div>
+              <Source nb="eda" cells={[73, 74, 75, 79, 80, 81]} />
+            </div>
+          ),
+        },
+        {
           label: 'Efecto de región',
           content: (
             <div className="space-y-10">
@@ -232,6 +270,15 @@ export function Eda() {
                 </p>
               </Card>
               <Source nb="eda" cells={[93, 94, 95]} />
+            </div>
+          ),
+        },
+        {
+          label: 'Conclusiones del EDA',
+          content: (
+            <div className="space-y-6">
+              <Prose text={C.CONCLUSIONES} className="max-w-[960px]" />
+              <Source nb="eda" cells={[100]} />
             </div>
           ),
         },

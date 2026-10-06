@@ -76,6 +76,54 @@ export const CLF_BEST = {
   ],
 };
 
+export const CALIBRATION = {
+  raw: { nb: 'exp2' as const, outs: [[15, 0]] as [number, number][] },
+  source: 'Experimento_2_Clasificacion.ipynb, celda 15 (predicciones fuera de pliegue; menor Brier y ECE es mejor)',
+  columns: ['Modelo', 'Probabilidades', 'Brier', 'ECE', 'F1 macro (argmax)'],
+  rows: [
+    ['Random Forest', 'original', '0.0322', '0.0132', '0.8946'],
+    ['Random Forest', 'Platt', '0.0331', '0.0163', '0.8917'],
+    ['Random Forest', 'isotónica', '0.0319', '0.0030', '0.8945'],
+    ['XGBoost', 'original', '0.0325', '0.0145', '0.8887'],
+    ['XGBoost', 'Platt', '0.0340', '0.0240', '0.8897'],
+    ['XGBoost', 'isotónica', '0.0323', '0.0028', '0.8869'],
+    ['Árbol de decisión', 'original', '0.0354', '0.0124', '0.8817'],
+    ['Árbol de decisión', 'Platt', '0.0373', '0.0320', '0.8794'],
+    ['Árbol de decisión', 'isotónica', '0.0353', '0.0051', '0.8843'],
+    ['SVM RBF', 'original', '0.0605', '0.0245', '0.8152'],
+    ['SVM RBF', 'Platt', '0.0619', '0.0052', '0.8136'],
+    ['SVM RBF', 'isotónica', '0.0606', '0.0226', '0.8147'],
+    ['KNN', 'original', '0.0540', '0.0265', '0.8008'],
+    ['KNN', 'Platt', '0.0542', '0.0295', '0.7987'],
+    ['KNN', 'isotónica', '0.0533', '0.0053', '0.8011'],
+    ['Regresión logística', 'original', '0.1293', '0.0548', '0.6288'],
+    ['Regresión logística', 'Platt', '0.0996', '0.0766', '0.6059'],
+    ['Regresión logística', 'isotónica', '0.0944', '0.0273', '0.6282'],
+    ['Naive Bayes', 'original', '0.1260', '0.0715', '0.5825'],
+    ['Naive Bayes', 'Platt', '0.1109', '0.1099', '0.4989'],
+    ['Naive Bayes', 'isotónica', '0.1027', '0.0194', '0.3056'],
+  ],
+};
+
+export const RESIDUAL_TESTS = {
+  raw: { nb: 'exp3' as const, outs: [[11, 0]] as [number, number][] },
+  source: 'Experimento_3_Regresion.ipynb, celda 11 (residuos fuera de pliegue de Random Forest)',
+  columns: ['Prueba', 'Hipótesis nula', 'Estadístico', 'p'],
+  rows: [
+    ['Jarque-Bera', 'residuos normales', '182378.781890', '0.000000e+00'],
+    ['Breusch-Pagan', 'varianza constante', '2615.877418', '0.000000e+00'],
+    ['White (7 variables)', 'varianza constante', '5557.521930', '0.000000e+00'],
+    ['Ljung-Box, rezago 1', 'sin autocorrelación en orden de Hilbert', '1519.093066', '0.000000e+00'],
+    ['Ljung-Box, rezago 5', 'sin autocorrelación en orden de Hilbert', '2544.007720', '0.000000e+00'],
+    ['Ljung-Box, rezago 20', 'sin autocorrelación en orden de Hilbert', '3081.424362', '0.000000e+00'],
+    ['BDS, ventana 1 de 2,500', 'residuos i.i.d. en orden de Hilbert', '—', '1.098126e-04'],
+    ['BDS, ventana 2 de 2,500', 'residuos i.i.d. en orden de Hilbert', '—', '1.328251e-20'],
+    ['BDS, ventana 3 de 2,500', 'residuos i.i.d. en orden de Hilbert', '—', '3.723311e-37'],
+    ['BDS, ventana 4 de 2,500', 'residuos i.i.d. en orden de Hilbert', '—', '1.051572e-88'],
+    ['I de Moran (8 vecinos)', 'sin autocorrelación espacial', '0.103272', '5.000000e-03'],
+  ],
+};
+
 export const REG_BEST = {
   raw: { nb: 'exp3' as const, outs: [[6, 0]] as [number, number][] },
   source: 'Experimento_3_Regresion.ipynb, celda 6 (media ± desviación en los 5 pliegues externos)',

@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Md, NbImage, Raw, References, Source, Synthesis } from '@/components/Notebook';
+import { Cells, Md, NbImage, Raw, References, Source, Synthesis } from '@/components/Notebook';
 import { DataTable, HBars } from '@/components/Charts';
 import { Section } from '@/components/Section';
 import { mdCell, type NbKey } from '@/lib/notebooks';
@@ -81,6 +81,19 @@ export function Modelos() {
       }
       tabs={[
         {
+          label: 'Diseño y validación',
+          content: (
+            <Stack>
+              <div className="glass p-5 sm:p-6 max-w-[960px] border-l-4 !border-l-white/30 space-y-4">
+                <p className="text-white/50 text-[12px]">Síntesis del equipo</p>
+                {paras('4. Diseño experimental').map((p) => <Md key={p} text={p} />)}
+                <p className="text-white/35 text-[11px] font-mono">Resumen_final.md, sección 4</p>
+              </div>
+              <Cells nb="exp1" picks={[3, { i: 4, out: [1] }, 5, 6, 7, 9, 10, 11]} />
+            </Stack>
+          ),
+        },
+        {
           label: 'Modelos base',
           content: (
             <Stack>
@@ -100,7 +113,13 @@ export function Modelos() {
               <DataTable title="Mejor combinación de cada modelo" {...R.CLF_BEST} best={0} />
               <Fig name="exp2_9_0.png" alt="Matriz de confusión de cada modelo"
                 caption="Matriz de confusión de cada modelo, normalizada por fila (Experimento 2, celda 9)" />
+              <Fig name="exp2_11_0.png" alt="Curva ROC de cada modelo, una por clase"
+                caption="Curva ROC de cada modelo, uno contra el resto (Experimento 2, celda 11)" />
               <Synthesis i={6} />
+              <Cells nb="exp2" picks={[14]} />
+              <DataTable title="Calibración: original, Platt e isotónica" {...R.CALIBRATION} />
+              <Fig name="exp2_16_0.png" alt="Diagramas de confiabilidad de cada modelo"
+                caption="Diagramas de confiabilidad con las tres versiones de las probabilidades (Experimento 2, celda 16)" />
               <Reading nb="exp2" i={19} starts={['El balanceo no mejoró', 'Los árboles salen bien calibrados']} />
             </Stack>
           ),
@@ -111,14 +130,17 @@ export function Modelos() {
             <Stack>
               <Synthesis i={14} />
               <DataTable title="Mejor combinación de cada modelo" {...R.REG_BEST} best={0} />
+              <Cells nb="exp3" picks={[7, 8]} />
               <Fig name="exp3_10_0.png" alt="Residuos del mejor modelo de regresión"
                 caption="Residuos de Random Forest con las predicciones fuera de pliegue (Experimento 3, celda 10)" />
+              <DataTable title="Pruebas sobre los residuos de Random Forest" {...R.RESIDUAL_TESTS} />
+              <Cells nb="exp3" picks={[12, 13]} />
               <Reading nb="exp3" i={14} starts={['Random Forest es el mejor', 'Los residuos de Random Forest']} />
             </Stack>
           ),
         },
       ]}
-      after={<References items={[{ nb: 'benchmark', i: 23 }, { nb: 'exp2', i: 20 }, { nb: 'exp3', i: 15 }]} />}
+      after={<References items={[{ nb: 'exp1', i: 16 }, { nb: 'benchmark', i: 23 }, { nb: 'exp2', i: 20 }, { nb: 'exp3', i: 15 }]} />}
     />
   );
 }
