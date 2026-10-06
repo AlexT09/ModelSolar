@@ -76,3 +76,4 @@ site:
       url: https://github.com/KrissV89/ModelSolar
   parts:
     footer: assets/pie.md
+    primary_sidebar_footer: assets/barra-lateral.md

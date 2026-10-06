@@ -1,38 +1,38 @@
-/* Estilo del libro. Misma paleta que la presentación: rojo y negro sobre fondo claro. */
+/* Estilo del libro. Acento azul sobre fondo claro; títulos en serif. */
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap");
 
 :root {
-  --myst-color-link: #A8101A;
-  --myst-color-link-hover: #C0141F;
-  --myst-color-link-underline: #E8898F;
-  --myst-color-active: #C0141F;
-  --myst-color-active-bg: rgba(192, 20, 31, 0.08);
-  --myst-color-active-surface: #FBEFEF;
-  --myst-color-primary: #C0141F;
-  --myst-color-primary-hover: #8F0F17;
-  --myst-color-focus-ring: #C0141F;
-  --myst-color-focus-outline: #F3D6D6;
-  --myst-color-accent-text: #7A0D14;
-  --myst-color-accent-surface: #FBEFEF;
-  --myst-color-accent-surface-border: #F3D6D6;
-  --myst-color-accent-surface-text: #7A0D14;
+  --myst-color-link: #1A4FA0;
+  --myst-color-link-hover: #2563C9;
+  --myst-color-link-underline: #8DB3E8;
+  --myst-color-active: #1E5AA8;
+  --myst-color-active-bg: rgba(30, 90, 168, 0.09);
+  --myst-color-active-surface: #EEF4FC;
+  --myst-color-primary: #1E5AA8;
+  --myst-color-primary-hover: #12407F;
+  --myst-color-focus-ring: #1E5AA8;
+  --myst-color-focus-outline: #CFE0F6;
+  --myst-color-accent-text: #123E7C;
+  --myst-color-accent-surface: #EEF4FC;
+  --myst-color-accent-surface-border: #CFE0F6;
+  --myst-color-accent-surface-text: #123E7C;
 }
 
 html.dark {
-  --myst-color-link: #FF8A92;
-  --myst-color-link-hover: #FFB3B8;
-  --myst-color-link-underline: #C0141F;
-  --myst-color-active: #FF8A92;
-  --myst-color-active-bg: rgba(255, 107, 115, 0.16);
-  --myst-color-active-surface: #2A1517;
-  --myst-color-primary: #FF6B73;
-  --myst-color-primary-hover: #FFB3B8;
-  --myst-color-focus-ring: #FF6B73;
-  --myst-color-focus-outline: #FF6B73;
-  --myst-color-accent-text: #FFD9DC;
-  --myst-color-accent-surface: #3A1A1D;
-  --myst-color-accent-surface-border: #7A0D14;
-  --myst-color-accent-surface-text: #FFD9DC;
+  --myst-color-link: #8DB8F5;
+  --myst-color-link-hover: #B8D3FA;
+  --myst-color-link-underline: #2F6FCB;
+  --myst-color-active: #8DB8F5;
+  --myst-color-active-bg: rgba(125, 180, 255, 0.16);
+  --myst-color-active-surface: #14233A;
+  --myst-color-primary: #5B9BF0;
+  --myst-color-primary-hover: #B8D3FA;
+  --myst-color-focus-ring: #5B9BF0;
+  --myst-color-focus-outline: #5B9BF0;
+  --myst-color-accent-text: #D6E6FB;
+  --myst-color-accent-surface: #172B4D;
+  --myst-color-accent-surface-border: #2F6FCB;
+  --myst-color-accent-surface-text: #D6E6FB;
 }
 
 /* Títulos con serif para darle carácter; el texto sigue en la fuente del tema */
