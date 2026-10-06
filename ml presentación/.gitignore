@@ -1,0 +1,8 @@
+# Salida de Jupyter Book
+_build/
+# Partes crudas de la corrida (una por combinación y pliegue). Lo consolidado queda en runs/*.parquet y runs/oof/.
+proceso/runs/partes/
+proceso/runs/*.txt
+*.tmp
+__pycache__/
+.pytest_cache/

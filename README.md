@@ -1,19 +1,122 @@
-﻿# ModelSolar
+# ModelSolar: Repositorio Unificado de Machine Learning
 
-EDA y modelado de datos de plantas solares fotovoltaicas globales, basado en el dataset de cimejia/solarPV.
+**Universidad del Norte**  
+**Pregrado en Ciencia de Datos**  
+**Machine Learning** - Profesor: Dr. Lihki Rubio  
+**Autores:** Jesús David Arévalo Montilla, Enmanuel David Díaz Molinares, Alex David Terán Meza  
 
-## Entorno
+---
 
-\\\powershell
+## Descripción General
+
+Este repositorio centraliza y unifica todas las entregas, tareas y proyectos de la asignatura de **Machine Learning**, estructurado en dos grandes áreas: el **Proyecto Final de Aptitud Solar Fotovoltaica** (investigación, modelado combinatorio, pipelines y despliegue) y las **Tareas del Semestre** (PIDAA, data leakage y clasificador bayesiano).
+
+---
+
+## Estructura del Repositorio
+
+```text
+ModelSolar/
+│
+├── ml presentación/                          # PROYECTO FINAL: INVESTIGACIÓN Y ENTREGABLES
+│   ├── index.md                              # Portada y metadatos de Jupyter Book
+│   ├── myst.yml                              # Configuración de compilación MyST
+│   ├── Dataset_Mundial_Final(2).csv          # Base cruda de la literatura mundial
+│   ├── contexto_proyecto_aptitud_solar.md    # Formulación del problema
+│   │
+│   ├── proceso/                              # Cuadernos reproducibles y código activo
+│   │   ├── dataset_eda_corregido.csv         # Base limpia estructurada en bloques de 5°
+│   │   ├── EDA_Corregido(Entregable 3).ipynb # Limpieza espacial y análisis exploratorio
+│   │   ├── Benchmark_Modelos_Base.ipynb      # Modelos preliminares del curso
+│   │   ├── Experimento_1_Diseno.ipynb        # Diseño del experimento de 140 combinaciones
+│   │   ├── Experimento_2_Clasificacion.ipynb # 112 modelos de clasificación (ROC, calibración)
+│   │   ├── Experimento_3_Regresion.ipynb     # 28 modelos de regresión y análisis de residuos
+│   │   ├── Experimento_4_Optimizadores.ipynb # Comparación de optimizadores (curvas anytime)
+│   │   ├── Experimento_5_Computacional.ipynb # Complejidad O(·), FAISS, SAGA y aceleraciones
+│   │   ├── Experimento_6_Estadistica.ipynb   # Friedman, Nemenyi CD, DeLong, MCS, Diebold-Mariano
+│   │   ├── Experimento_7_Interpretabilidad.ipynb # Explicabilidad TreeSHAP y contraste LIME
+│   │   ├── Resumen_Final.ipynb               # CUADERNO SÍNTESIS EJECUTADO (Cuadros 1 a 8)
+│   │   ├── Resumen_final.md                  # Informe técnico consolidado
+│   │   ├── Clima_a_Generacion_Colombia.ipynb # Construcción de la base XM + Open-Meteo
+│   │   ├── Benchmark_Colombia.ipynb          # Modelos predictivos en generación real
+│   │   ├── src/                              # Módulos Python reutilizables (config, stats, runner)
+│   │   ├── tests/                            # Pruebas unitarias automatizadas (pytest)
+│   │   └── runs/                             # Tabla maestra (master.parquet) y predicciones OOF
+│   │
+│   ├── exposicion/                           # Presentación oral del proyecto
+│   │   ├── main.tex                          # Diapositivas en LaTeX Beamer (conferencia)
+│   │   ├── figuras/                          # Gráficos y diagramas incluidos en la presentación
+│   │   └── guiones/                          # Guion detallado por diapositiva
+│   │
+│   ├── resumen_de_sesion/                    # Bitácoras y reporte de fuentes solares abiertas
+│   │   └── exploracion_fuentes_plantas.md    # Catálogo de datos de plantas en el mundo
+│   │
+│   └── entregas_anteriores/                  # Histórico de cuadernos y borradores previos
+│       ├── EDA(Entregable 1)(1).ipynb
+│       └── Modelo_Base(Entregabloe 2)(1).ipynb
+│
+├── Proyecto Integrador Pipelines/            # ARQUITECTURA DE INTEGRACIÓN Y DESPLIEGUE
+│   ├── app/                                  # Servicio de inferencia con FastAPI
+│   ├── data/                                 # Datos de entrenamiento del servicio (heart.csv)
+│   ├── docker/                               # Contenedores Docker (app y jupyter)
+│   ├── k8s/                                  # Manifiestos de despliegue en Kubernetes
+│   ├── notebooks/                            # Cuadernos de cross-validation y data leakage
+│   ├── tests/                                # Suite de pruebas de la API y modelo
+│   └── README.md                             # Documentación de infraestructura y CI/CD
+│
+├── tareas/                                   # TAREAS ACADÉMICAS DEL SEMESTRE
+│   ├── tarea_1_pidaa_eda/                    # Tarea 1: EDA en PySpark y Scikit-learn
+│   │   ├── EDA.ipynb                         # Cuaderno de benchmarking Spark vs Sklearn
+│   │   ├── muestra_inspeccion_300.csv        # Muestra inspeccionada
+│   │   ├── metricas_sklearn.json             # Métricas comparadas
+│   │   └── figuras/                          # Matrices de confusión y curvas ROC
+│   │
+│   ├── tarea_2_pipelines_fuga/               # Tarea 2: Demostración y mitigación de data leakage
+│   │   ├── 1_model_leakage_demo.ipynb        # Demostración del sesgo inducido por data leakage
+│   │   └── 2_model_pipeline_cv.ipynb         # Pipelines de Scikit-learn libres de data leakage
+│   │
+│   └── tarea_3_clasificador_bayesiano/       # Tarea 3: Modelos bayesianos en Heart Disease
+│       ├── tarea3.ipynb                      # Cuaderno final ejecutado (GaussianNB vs Logística)
+│       ├── 4. Clasificador Bayesiano - Machine Learning.pdf # Enunciado oficial de la tarea
+│       ├── clasificador_bayesiano.md         # Documento conceptual de análisis bayesiano
+│       ├── documentaci_n_del_dataset_cleveland_heart_disease.md # Diccionario de datos
+│       ├── heart+disease/                    # Dataset original de Cleveland (UCI)
+│       └── scripts/                          # Scripts auxiliares de generación y análisis
+│
+├── notebooks/                                # Cuadernos complementarios de apoyo
+│   └── Entregable 1 Proyecto/                # Versión final de entrega del EDA Solar
+│       └── EDA.ipynb
+│
+├── Dataset/                                  # Archivos de datos solares brutos
+│   ├── Dataset_Mundial.xlsx
+│   └── Dataset_Mundial_Final.csv
+│
+├── environment.yml                           # Entorno reproducible Conda
+└── README.md                                 # Este documento
+```
+
+---
+
+## Instrucciones de Reproducción
+
+### 1. Entorno de Ejecución
+
+```powershell
 conda env create -f environment.yml
 conda activate solarpv-eda
 python -m ipykernel install --user --name solarpv-eda --display-name "Python (solarpv-eda)"
-\\\
+```
 
-## Estructura
+### 2. Verificación de Pruebas Unitarias
 
-- \Dataset/\ — datos crudos (xlsx, csv)
-- \
-otebooks/\ — notebooks de EDA y modelado
-- \src/\ — scripts reutilizables
-- \outputs/\ — resultados, gráficos, modelos exportados
+```powershell
+cd "ml presentación/proceso"
+pytest
+```
+
+### 3. Visualización de Resultados Consolidados
+
+Para revisar de forma condensada las 140 combinaciones, las curvas *anytime*, las pruebas estadísticas y los Cuadros 1 a 8:
+- Cuaderno ejecutable: [`ml presentación/proceso/Resumen_Final.ipynb`](ml%20presentación/proceso/Resumen_Final.ipynb)
+- Informe técnico estructurado: [`ml presentación/proceso/Resumen_final.md`](ml%20presentación/proceso/Resumen_final.md)
+- Diapositivas de la presentación oral: [`ml presentación/exposicion/main.tex`](ml%20presentación/exposicion/main.tex)

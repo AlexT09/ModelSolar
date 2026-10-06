@@ -1,0 +1,49 @@
+# Libro del proyecto de aptitud solar fotovoltaica (Jupyter Book 2 / MyST).
+# Construir desde esta carpeta:  jupyter-book build --html   → queda en _build/html
+# Los cuadernos no se vuelven a ejecutar al construir: se publican con las salidas guardadas.
+version: 1
+project:
+  title: "Aptitud solar fotovoltaica: del índice del dataset a la generación real"
+  description: "Proyecto de Machine Learning, Universidad del Norte. EDA corregido, benchmark de modelos base, experimento de 140 combinaciones y línea de Colombia."
+  authors:
+    - name: Jesús David Arévalo Montilla
+    - name: Enmanuel David Díaz Molinares
+    - name: Alex David Terán Meza
+  keywords: [aptitud solar, fotovoltaica, validación espacial, optimización de hiperparámetros]
+  license: CC-BY-NC-SA-4.0
+  github: https://github.com/KrissV89/ModelSolar
+  bibliography:
+    - proceso/referencias.bib
+  exclude:
+    - exposicion/**
+    - resumen_de_sesion/**
+    - entregas_anteriores/**
+    - "*.tex"
+    - "*.pdf"
+  toc:
+    - file: index.md
+    - title: Datos y EDA
+      children:
+        - file: proceso/EDA_Corregido(Entregable 3).ipynb
+    - title: Modelos base
+      children:
+        - file: proceso/Benchmark_Modelos_Base.ipynb
+    - title: Experimento de 140 combinaciones
+      children:
+        - file: proceso/Experimento_1_Diseno.ipynb
+        - file: proceso/Experimento_2_Clasificacion.ipynb
+        - file: proceso/Experimento_3_Regresion.ipynb
+        - file: proceso/Experimento_4_Optimizadores.ipynb
+        - file: proceso/Experimento_5_Computacional.ipynb
+        - file: proceso/Experimento_6_Estadistica.ipynb
+        - file: proceso/Experimento_7_Interpretabilidad.ipynb
+    - title: Línea de Colombia (clima y generación real)
+      children:
+        - file: proceso/Clima_a_Generacion_Colombia.ipynb
+        - file: proceso/Benchmark_Colombia.ipynb
+    - title: Resumen final
+      children:
+        - file: proceso/Resumen_final.md
+        - file: proceso/Resumen_Final.ipynb
+site:
+  template: book-theme

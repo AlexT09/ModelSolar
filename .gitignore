@@ -1,18 +1,39 @@
-﻿data/
+# Claude, agents and local workspaces
+.claude/
+skills-lock.json
+.gemini/
+.obsidian/
+.vscode/
+.idea/
+
+# Large datasets, data dumps and binaries (keeping repo lightweight for notebooks)
+*.csv
+*.xlsx
+*.parquet
+*.npz
+*.pdf
+*.joblib
+*.pkl
+*.zip
+*.tar.gz
+*.ps1
+*.log
+data/
+
+# Cache, logs and build outputs
 .ipynb_checkpoints/
 __pycache__/
 *.pyc
-.vscode/
-
-# MyST build outputs
-_build
-
-# Proyecto Integrador Pipelines — artefactos generados
+**/_build/
+**/.pytest_cache/
 Proyecto Integrador Pipelines/app/model.joblib
 Proyecto Integrador Pipelines/drift_report.html
-Proyecto Integrador Pipelines/.pytest_cache/
 
-# Excepción a la regla "data/" de arriba: este CSV se versiona a propósito para que el
-# proyecto integrador sea reproducible sin credenciales de Kaggle.
+# Raw data dumps and heavy non-notebook files
+tareas/tarea_3_clasificador_bayesiano/heart+disease/
+tareas/tarea_1_pidaa_eda/metricas_sklearn.json
+ml presentación/resumen_de_sesion/Continuacionconv.txt
+
+# Exception for pipeline test dataset (required by CI)
 !Proyecto Integrador Pipelines/data/
 !Proyecto Integrador Pipelines/data/heart.csv

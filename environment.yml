@@ -1,6 +1,7 @@
-﻿name: solarpv-eda
+name: solarpv-eda
 channels:
   - conda-forge
+  - defaults
 dependencies:
   - python=3.11
   - pandas
@@ -10,8 +11,18 @@ dependencies:
   - jupyterlab
   - scikit-learn
   - statsmodels
+  - pyarrow
   - nbstripout
   - pip
   - pip:
-      - ydata-profiling
       - xgboost
+      - optuna
+      - deap
+      - imbalanced-learn
+      - faiss-cpu
+      - shap
+      - lime
+      - scikit-posthocs
+      - arch
+      - ydata-profiling
+      - pytest
