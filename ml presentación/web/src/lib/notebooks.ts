@@ -10,7 +10,7 @@ export interface Cell {
 }
 
 export type NbKey =
-  | 'eda' | 'benchmark' | 'clima' | 'benchmark_col'
+  | 'eda' | 'benchmark'
   | 'exp1' | 'exp2' | 'exp3' | 'exp4' | 'exp5' | 'exp6' | 'exp7';
 
 type Data = Record<NbKey, { file: string; cells: Cell[] }> & {

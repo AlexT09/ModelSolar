@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { CONTAINER } from './Section';
 
+// Las partes de la presentación según la guía del entregable (sección 8)
 export const GROUPS = [
-  { label: 'Proyecto', href: '#proyecto' },
-  { label: 'Línea 1', href: '#linea-1' },
-  { label: 'Línea 2', href: '#linea-2' },
+  { label: 'Introducción', href: '#introduccion' },
+  { label: 'Datos', href: '#etl' },
+  { label: 'Modelos', href: '#modelos' },
+  { label: 'Optimización', href: '#optimizacion' },
   { label: 'Conclusiones', href: '#conclusiones' },
 ];
 

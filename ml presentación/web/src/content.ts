@@ -1,13 +1,10 @@
 // Textos copiados literalmente de "ml presentación/proceso/EDA_Corregido(Entregable 3).ipynb".
 // El número entre corchetes es el índice de la celda de origen. No se reescriben ni se resumen.
 
-export const NOTEBOOK_URL =
-  'https://github.com/AlexT09/ModelSolar/blob/main/ml%20presentaci%C3%B3n/proceso/EDA_Corregido(Entregable%203).ipynb';
-
 // ---------------------------------------------------------------------------------------------
-// Apertura: textos literales de "ml presentación/exposicion/main.tex" (sin el formato de LaTeX),
-// diapositivas "El problema", "Nuestra solución planteada", la diapositiva de mensaje,
-// "La pregunta" y "De dónde salen los datos". De esa exposición solo se toma la apertura: las
+// Introducción y contexto: textos literales de "ml presentación/exposicion/main.tex" (sin el
+// formato de LaTeX), diapositivas "El problema", "La pregunta" y "De dónde salen los datos".
+// De esa exposición solo se toman esas diapositivas: las
 // cifras de resultados de sus diapositivas finales no coinciden en todo con los cuadernos, así que
 // los resultados de la web salen de los cuadernos.
 // ---------------------------------------------------------------------------------------------
@@ -20,27 +17,6 @@ export const PROBLEMA = [
 ];
 export const ENCONTRAMOS =
   'El índice se calcula solo con el terreno, depende de la región y de cómo se procesaron los datos, y no se puede predecir desde el clima ni transferir entre continentes.';
-
-export const LINEAS = [
-  {
-    title: 'Línea 1: auditar el índice',
-    items: [
-      'EDA corregido de la base mundial.',
-      'Modelos base del curso con validación espacial y ajuste anidado.',
-      'Medir si el índice se transfiere entre regiones.',
-    ],
-  },
-  {
-    title: 'Línea 2: generación real',
-    items: [
-      'Base propia: generación horaria real de 16 plantas en Colombia (XM) y su clima (Open-Meteo).',
-      'Medir cuánto explica el clima la producción real.',
-      'Mismos modelos, sin data leakage.',
-    ],
-  },
-];
-
-export const MENSAJE = ['El índice de aptitud mide la región, no el clima.', 'Con datos reales, el clima explica la mitad de la producción diaria.'];
 
 export const PREGUNTA = [
   'Idea inicial: predecir qué tan apto es un lugar para una planta solar **a partir del clima**, para que sirva en cualquier parte.',
@@ -56,11 +32,38 @@ export const FUENTES: [string, string][] = [
   ['Modelos de elevación (DEM)', 'Elevación, pendiente, orientación y curvatura'],
   ['OpenStreetMap', 'Distancia a carretera y área de la planta'],
 ];
-export const FUENTES_NOTA =
-  'Para la segunda parte construimos una base propia con **XM** (generación real horaria en Colombia) y **Open-Meteo** (clima por hora).';
+
+// ---------------------------------------------------------------------------------------------
+// Objetivos del proyecto. Es el único texto que no sale literal de un cuaderno: se redactó a partir
+// de la guía del entregable (sección 1) y de lo que se hizo en los cuadernos.
+// ---------------------------------------------------------------------------------------------
+export const OBJETIVO_GENERAL =
+  'Desarrollar y comparar modelos de Machine Learning de clasificación y regresión para predecir la aptitud solar de plantas fotovoltaicas, incorporando optimización de hiperparámetros, validación estadística, eficiencia computacional e interpretabilidad.';
+
+export const OBJETIVOS = [
+  {
+    text: 'Preparar y explorar los datos (ETL y EDA).',
+    section: { label: '4 y 5. ETL y EDA', href: '#etl' },
+    evidence: 'De 58,978 a 57,976 plantas y 15 predictoras, con 14 problemas de calidad tratados.',
+  },
+  {
+    text: 'Entrenar modelos de clasificación y regresión.',
+    section: { label: '6. Modelos y resultados', href: '#modelos' },
+    evidence: '7 modelos por tarea, 136 combinaciones con balanceo y validación anidada por bloques espaciales.',
+  },
+  {
+    text: 'Comparar métodos de optimización de hiperparámetros.',
+    section: { label: '7. Comparación de optimizadores', href: '#optimizacion' },
+    evidence: 'Grid Search, Random Search, optimización bayesiana y algoritmo genético, con su costo computacional.',
+  },
+  {
+    text: 'Elegir e interpretar el mejor modelo con pruebas estadísticas.',
+    section: { label: '8. Resultados finales', href: '#conclusiones' },
+    evidence: 'Friedman, Nemenyi, DeLong y MCS; interpretación con SHAP y LIME.',
+  },
+];
 
 // [0]
-export const TITLE ='EDA corregido: aptitud solar fotovoltaica (Entrega 3)';
 export const COURSE = 'Proyecto final, Machine Learning, Pregrado en Ciencia de Datos.';
 export const AUTHORS =
   'Integrantes: Jesús David Arévalo Montilla, Enmanuel David Díaz Molinares, Alex David Terán Meza.';

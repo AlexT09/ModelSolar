@@ -27,8 +27,6 @@ NB_FIGS = FIGS / "nb"
 NOTEBOOKS = {
     "eda": "EDA_Corregido(Entregable 3).ipynb",
     "benchmark": "Benchmark_Modelos_Base.ipynb",
-    "clima": "Clima_a_Generacion_Colombia.ipynb",
-    "benchmark_col": "Benchmark_Colombia.ipynb",
     "exp1": "Experimento_1_Diseno.ipynb",
     "exp2": "Experimento_2_Clasificacion.ipynb",
     "exp3": "Experimento_3_Regresion.ipynb",

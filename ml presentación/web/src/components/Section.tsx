@@ -57,12 +57,14 @@ export function Tabs({ tabs }: { tabs: Tab[] }) {
   );
 }
 
-export function Section({ id, kicker, title, summary, stats, tabs, after }: {
+// Sección de la presentación: síntesis, cifras clave, un visual principal y el detalle en pestañas.
+export function Section({ id, kicker, title, summary, stats, visual, tabs, after }: {
   id: string;
   kicker: string;
   title: string;
   summary: ReactNode;
   stats?: Stat[];
+  visual?: ReactNode;
   tabs?: Tab[];
   after?: ReactNode;
 }) {
@@ -74,36 +76,16 @@ export function Section({ id, kicker, title, summary, stats, tabs, after }: {
           {title}
         </h2>
         <div className="max-w-[900px] mb-10">{summary}</div>
-        {stats && <div className="mb-12">{<Stats items={stats} />}</div>}
-        {tabs && <Tabs tabs={tabs} />}
+        {stats && <div className="mb-10">{<Stats items={stats} />}</div>}
+        {visual && <div className="mb-14">{visual}</div>}
+        {tabs && (
+          <div>
+            <p className="text-white/45 text-[13px] mb-3">Detalle</p>
+            <Tabs tabs={tabs} />
+          </div>
+        )}
         {after}
       </div>
     </section>
-  );
-}
-
-// Separador de cada línea de trabajo
-export function LineHeader({ id, label, title, text, tasks }: {
-  id: string;
-  label: string;
-  title: string;
-  text: ReactNode;
-  tasks: { text: ReactNode; source: string };
-}) {
-  return (
-    <div id={id} className="scroll-mt-16 border-t border-white/[0.06] bg-white/[0.02]">
-      <div className={`${CONTAINER} py-14 sm:py-20 grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end`}>
-        <div>
-          <p className="text-white/45 text-[13px] mb-3">{label}</p>
-          <p className="text-white text-[34px] sm:text-[56px] md:text-[64px] leading-[1]">{title}</p>
-          <div className="text-white/65 text-[16px] sm:text-[18px] leading-[1.5] max-w-[760px] mt-6">{text}</div>
-        </div>
-        <div className="glass p-5 sm:p-6">
-          <p className="text-white/50 text-[13px] mb-3">Qué se predice</p>
-          {tasks.text}
-          <p className="text-white/35 text-[11px] font-mono mt-3">{tasks.source}</p>
-        </div>
-      </div>
-    </div>
   );
 }

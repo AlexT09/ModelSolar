@@ -7,9 +7,9 @@ Requiere scikit-learn 1.9.0 (la de ml presentación/proceso/environment.yml): co
 StratifiedGroupKFold reparte los bloques distinto y la verificación de pliegues falla.
 
 Uso:
-    python scripts/build_data.py RUTA/Dataset_Mundial_Final.csv
+    python scripts/build_data.py "../Dataset/Dataset_Mundial_Final(2).csv"
 
-El CSV está en https://github.com/cimejia/solarPV (Dataset/Dataset_Mundial_Final.csv).
+El CSV está en https://github.com/cimejia/solarPV (Dataset/Dataset_Mundial_Final.csv; en este repositorio se guarda como ml presentación/Dataset/Dataset_Mundial_Final(2).csv).
 """
 
 import json

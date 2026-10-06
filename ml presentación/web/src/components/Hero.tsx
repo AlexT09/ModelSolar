@@ -10,11 +10,11 @@ const CUADERNOS_URL = 'https://github.com/AlexT09/ModelSolar/tree/main/ml%20pres
 const BAR_HEIGHTS = summary.ias_hist;
 const BIN = 0.03;
 
-// Cifras de los cuadernos (Experimento 2 celda 7, Experimento 3 celda 6, Benchmark Colombia celda 7)
+// Cifras de los cuadernos (Experimento 2 celda 7, Experimento 3 celda 6, Experimento 1 celda 15)
 const RESULTS = [
   { value: '0.894', label: 'F1 macro · Random Forest · base mundial' },
   { value: '0.902', label: 'R² · Random Forest · índice de aptitud' },
-  { value: '0.469', label: 'R² del clima · generación real en Colombia' },
+  { value: '136', label: 'combinaciones de modelo, balanceo y optimizador' },
 ];
 
 function classOf(ias: number) {
@@ -142,13 +142,13 @@ export default function Hero() {
               </Animate>
               <Animate delay={500} direction="up">
                 <p className="text-white/80 text-[16px] sm:text-[18px] md:text-[20px] font-[450] leading-[1.3] max-w-[420px] mb-7 sm:mb-10">
-                  Aptitud solar fotovoltaica: del índice del dataset a la generación real.
+                  Entregable 3 · Predicción de la aptitud solar de plantas fotovoltaicas con Machine Learning.
                   <span className="block text-white/55 text-[14px] sm:text-[15px] mt-3">{COURSE}</span>
                 </p>
               </Animate>
               <Animate delay={700} direction="up">
                 <div className="flex flex-wrap gap-3 sm:gap-4">
-                  <a href="#proyecto"
+                  <a href="#introduccion"
                     className="inline-flex items-center h-[46px] sm:h-[51px] px-5 sm:px-[27px] bg-[#E9E9E9] rounded-[12px] text-[#0A0707] text-[14px] sm:text-[15.5px] font-[450] leading-[15.5px] transition-opacity hover:opacity-90">
                     Ver el proyecto
                   </a>
@@ -209,7 +209,7 @@ function Nav() {
               className="h-[46px] px-6 inline-flex items-center rounded-[11px] text-white text-[14px] font-[450] leading-[14px] hover:bg-white/5 transition-colors">
               Cuadernos
             </a>
-            <a href="#proyecto"
+            <a href="#introduccion"
               className="h-[46px] px-6 inline-flex items-center bg-[#E9E9E9] rounded-[11px] text-[#0A0707] text-[14px] font-[450] leading-[14px] hover:bg-white transition-colors">
               Ver el proyecto
             </a>
@@ -258,7 +258,7 @@ function Nav() {
             className={`flex flex-col gap-3 transition-all duration-300 ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
             style={{ transitionDelay: isOpen ? '350ms' : '0ms' }}
           >
-            <a href="#proyecto" onClick={() => setIsOpen(false)}
+            <a href="#introduccion" onClick={() => setIsOpen(false)}
               className="w-full h-[50px] flex items-center justify-center bg-[#E9E9E9] rounded-[12px] text-[#0A0707] text-[15px] font-[450] transition-colors hover:bg-white">
               Ver el proyecto
             </a>

@@ -38,7 +38,7 @@ limpieza del cuaderno y falla si alguna cifra no coincide. Necesita scikit-learn
 `proceso/environment.yml`:
 
 ```bash
-python scripts/build_data.py ../Dataset/Dataset_Mundial_Final.csv
+python scripts/build_data.py "../Dataset/Dataset_Mundial_Final(2).csv"
 ```
 
-El CSV está en `ml presentación/Dataset/` (copia de [cimejia/solarPV](https://github.com/cimejia/solarPV/tree/main/Dataset)).
+El CSV está en `ml presentación/Dataset/Dataset_Mundial_Final(2).csv` (copia de [cimejia/solarPV](https://github.com/cimejia/solarPV/tree/main/Dataset)).
