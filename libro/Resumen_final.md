@@ -20,7 +20,7 @@ Juntamos tres fuentes públicas: la generación hora a hora y la capacidad diari
 nubosidad, temperatura, humedad y viento) y las coordenadas de cada planta, del dataset de Mantilla-Guerra et al. (2026) y de las
 fichas de Global Energy Monitor. XM no publica coordenadas, así que cada planta se emparejó a mano por nombre y capacidad.
 
-El resultado son 8,589 días-planta de 16 plantas en 6 zonas, de enero de 2024 a febrero de 2026. Se predice una sola cosa: el factor
+El resultado son 8,589 días-planta de 16 plantas en 6 zonas, de enero de 2024 a febrero de 2026. Se predice el factor
 de capacidad (FC) diario, la energía del día dividida entre la de un día completo a plena capacidad.
 
 ![Esquema de la base de Colombia](../figuras/fig_pipeline_clima.png)

@@ -17,7 +17,7 @@ pública para hacerlo: XM, el operador del mercado eléctrico, publica la genera
 Por eso armamos una base propia con la generación real de XM, el clima de Open-Meteo y coordenadas verificadas: 8,589 días-planta de
 16 plantas, de enero de 2024 a febrero de 2026.
 
-Predecimos una sola cosa: el **factor de capacidad (FC) diario**, la energía del día dividida entre la que habría dado la planta a
+Predecimos el **factor de capacidad (FC) diario**, la energía del día dividida entre la que habría dado la planta a
 plena capacidad las 24 horas. Como cada planta tiene su propio nivel por su tecnología, que no conocemos, predecimos cuánto sube o baja
 su FC frente a ese nivel.
 
