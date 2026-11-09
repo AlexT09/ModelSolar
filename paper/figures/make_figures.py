@@ -59,17 +59,15 @@ def eda(t):
     # Variables centradas con la media de cada planta (variación día a día dentro de la planta)
     c = t[VARS + ["fc"]] - t.groupby("code")[VARS + ["fc"]].transform("mean")
 
-    fig, axes = plt.subplots(1, 2, figsize=(ANCHO, 2.9))
-    axes[0].hist(t.fc, bins=40, color=AZUL, edgecolor="white", linewidth=0.3)
-    axes[0].set_xlabel("Daily capacity factor (–)")
-    axes[0].set_ylabel("Plant-days")
-    axes[1].scatter(c.rad_bm, c.fc, s=2, alpha=0.15, color=AZUL, rasterized=True)
+    # Solo la relación con la radiación: la distribución del FC ya está en hist_variables.pdf
+    fig, ax = plt.subplots(figsize=(ANCHO, 3.4))
+    ax.scatter(c.rad_bm, c.fc, s=3, alpha=0.15, color=AZUL, rasterized=True, label="Plant-day")
     b = np.polyfit(c.rad_bm, c.fc, 1)
     xs = np.linspace(c.rad_bm.min(), c.rad_bm.max(), 50)
-    axes[1].plot(xs, np.polyval(b, xs), color=OCRE, linestyle="--", label="OLS fit")
-    axes[1].set_xlabel("Centered GHI (kWh/m$^2$/day)")
-    axes[1].set_ylabel("Centered CF (–)")
-    axes[1].legend(frameon=False, loc="upper left")
+    ax.plot(xs, np.polyval(b, xs), color=OCRE, linestyle="--", label="OLS fit")
+    ax.set_xlabel("Centered GHI (kWh/m$^2$/day)")
+    ax.set_ylabel("Centered capacity factor (–)")
+    ax.legend(frameon=False, loc="upper left", markerscale=4)
     fig.tight_layout()
     guarda(fig, "eda_colombia.pdf")
 
@@ -110,30 +108,31 @@ def eda(t):
 
 
 def diagrama():
-    fig, ax = plt.subplots(figsize=(ANCHO, 3.3))
-    ax.set_xlim(-0.1, 12.3); ax.set_ylim(0.1, 4.7); ax.axis("off")
+    # Cajas con margen holgado: el texto no debe tocar los bordes con ninguna fuente
+    fig, ax = plt.subplots(figsize=(ANCHO, 3.4))
+    ax.set_xlim(-0.2, 13.4); ax.set_ylim(0.1, 4.8); ax.axis("off")
     cajas = {   # x, y, ancho, alto, texto
-        "x": (0.0, 2.9, 3.1, 1.1, "Daily weather $\\mathbf{x}_{pt}$\n(5 variables)"),
-        "z": (0.0, 1.0, 3.1, 1.1, "Center by plant,\nstandardize: $\\mathbf{z}_{pt}$"),
-        "b": (4.1, 3.5, 3.9, 1.0, "Common slope $\\boldsymbol{\\beta}$\n(Ridge, other zones)"),
-        "bp": (4.1, 2.0, 3.9, 1.0, "Plant deviation $\\mathbf{b}_p$\n(Ridge, own past)"),
-        "l": (4.1, 0.5, 3.9, 1.0, "Adaptive level $\\ell_{pt}$\n(EWMA to day $t-1$)"),
-        "y": (9.1, 2.0, 3.1, 1.0, "Prediction $\\hat{y}_{pt}$"),
+        "x": (0.0, 3.0, 3.4, 1.15, "Daily weather\n$\\mathbf{x}_{pt}$"),
+        "z": (0.0, 0.95, 3.4, 1.15, "Centered and\nscaled $\\mathbf{z}_{pt}$"),
+        "b": (4.4, 3.55, 4.2, 1.05, "Common slope $\\boldsymbol{\\beta}$\nRidge, other zones"),
+        "bp": (4.4, 2.05, 4.2, 1.05, "Plant deviation $\\mathbf{b}_p$\nRidge, own past"),
+        "l": (4.4, 0.55, 4.2, 1.05, "Adaptive level $\\ell_{pt}$\nEWMA to day $t-1$"),
+        "y": (9.8, 2.05, 3.4, 1.05, "Prediction\n$\\hat{y}_{pt}$"),
     }
     for clave, (x, y, w, h, texto) in cajas.items():
         color = "#FFF4D6" if clave in ("bp", "l") else "#E6EEF7"
         ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.05", facecolor=color, edgecolor=AZUL, linewidth=1.5))
-        ax.text(x + w / 2, y + h / 2, texto, ha="center", va="center", fontsize=11)
+        ax.text(x + w / 2, y + h / 2, texto, ha="center", va="center", fontsize=11, linespacing=1.3)
     flecha = dict(arrowstyle="-|>", color=AZUL, lw=1.5, shrinkA=2, shrinkB=2)
-    ax.annotate("", (1.55, 2.15), (1.55, 2.85), arrowprops=flecha)                 # x -> z
-    ax.annotate("", (4.05, 4.0), (3.15, 1.75), arrowprops=flecha)                  # z -> beta
-    ax.annotate("", (4.05, 2.5), (3.15, 1.55), arrowprops=flecha)                  # z -> b_p
-    ax.annotate("", (6.05, 3.05), (6.05, 3.45), arrowprops=flecha)                 # beta -> b_p (encogimiento)
-    for yy in (4.0, 2.5, 1.0):
-        ax.annotate("", (9.05, 2.5), (8.05, yy), arrowprops=flecha)                # componentes -> predicción
-    ax.annotate("", (8.05, 0.8), (10.65, 1.95), arrowprops=dict(arrowstyle="-|>", color=OCRE, lw=1.5, linestyle="--",
-                                                                  connectionstyle="arc3,rad=-0.35", shrinkA=2, shrinkB=2))
-    ax.text(10.9, 0.75, "observed\nresiduals", ha="center", va="center", fontsize=11, color="#8A6514")
+    ax.annotate("", (1.7, 2.15), (1.7, 2.95), arrowprops=flecha)                   # x -> z
+    ax.annotate("", (4.35, 4.05), (3.45, 1.75), arrowprops=flecha)                 # z -> beta
+    ax.annotate("", (4.35, 2.55), (3.45, 1.55), arrowprops=flecha)                 # z -> b_p
+    ax.annotate("", (6.5, 3.15), (6.5, 3.5), arrowprops=flecha)                    # beta -> b_p (encogimiento)
+    for yy in (4.05, 2.55, 1.05):
+        ax.annotate("", (9.75, 2.55), (8.65, yy), arrowprops=flecha)               # componentes -> predicción
+    ax.annotate("", (8.65, 0.85), (11.5, 2.0), arrowprops=dict(arrowstyle="-|>", color=OCRE, lw=1.5, linestyle="--",
+                                                                 connectionstyle="arc3,rad=-0.35", shrinkA=2, shrinkB=2))
+    ax.text(11.9, 0.75, "observed\nresiduals", ha="center", va="center", fontsize=11, color="#8A6514")
     guarda(fig, "diagrama_modelo.pdf")
 
 
@@ -160,7 +159,7 @@ def resultados():
         ax.plot(curva.index * 100, curva[col], color=color, marker=marca, linestyle=estilo, label=etiqueta)
     ax.set_xlabel("Training rows used (%)")
     ax.set_ylabel("Median within-plant $R^2$")
-    ax.legend(frameon=False)
+    ax.legend(frameon=False, loc="upper center", bbox_to_anchor=(0.5, -0.25), ncol=3, fontsize=12, columnspacing=1.0, handlelength=1.6)
     fig.tight_layout()
     guarda(fig, "curva_aprendizaje.pdf")
 
