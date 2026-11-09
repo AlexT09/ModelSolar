@@ -17,8 +17,6 @@ project:
   bibliography:
     - ml presentación/proceso/referencias.bib
   exclude:
-    - tareas/**
-    - Proyecto Integrador Pipelines/**
     - notebooks/**
     - Dataset/**
     - data/**

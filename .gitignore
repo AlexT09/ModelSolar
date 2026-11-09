@@ -33,11 +33,3 @@ htmlcov/
 *.ps1
 *.log
 data/
-
-# Generated deployment artifacts
-Proyecto Integrador Pipelines/app/model.joblib
-Proyecto Integrador Pipelines/drift_report.html
-
-# Exception for pipeline test dataset (required by CI)
-!Proyecto Integrador Pipelines/data/
-!Proyecto Integrador Pipelines/data/heart.csv
