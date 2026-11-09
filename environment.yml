@@ -12,6 +12,7 @@ dependencies:
   - scikit-learn
   - statsmodels
   - pyarrow
+  - requests
   - nbstripout
   - pip
   - pip:
@@ -24,5 +25,6 @@ dependencies:
       - lime
       - scikit-posthocs
       - arch
+      - memory_profiler
       - ydata-profiling
       - pytest

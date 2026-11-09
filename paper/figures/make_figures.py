@@ -2,7 +2,7 @@
 
 Uso, desde la carpeta paper/:
     python figures/make_figures.py
-Lee ../ml presentación/proceso/tabla_diaria_colombia.csv y escribe figures/*.pdf
+Lee ../data/tabla_diaria_colombia.csv y escribe figures/*.pdf
 """
 from pathlib import Path
 
@@ -11,7 +11,7 @@ import numpy as np
 import pandas as pd
 
 AQUI = Path(__file__).resolve().parent
-DATOS = AQUI.parent.parent / "ml presentación" / "proceso" / "tabla_diaria_colombia.csv"
+DATOS = AQUI.parent.parent / "data" / "tabla_diaria_colombia.csv"
 
 plt.rcParams.update({
     "font.family": "sans-serif",

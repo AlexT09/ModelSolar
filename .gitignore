@@ -32,4 +32,5 @@ htmlcov/
 *.tar.gz
 *.ps1
 *.log
+*.tmp
 data/
