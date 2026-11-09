@@ -34,3 +34,8 @@ htmlcov/
 *.log
 *.tmp
 data/
+
+# Excepciones: las figuras y los resultados del paper sí se versionan (son pequeños y el paper los necesita)
+!paper/figures/*.pdf
+!paper/resultados/*.csv
+!paper/resultados/*.json

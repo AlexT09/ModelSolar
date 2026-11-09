@@ -6,25 +6,10 @@ dependencies:
   - python=3.11
   - pandas
   - numpy
+  - scipy
   - matplotlib
-  - seaborn
-  - jupyterlab
   - scikit-learn
-  - statsmodels
-  - pyarrow
+  - xgboost
   - requests
-  - nbstripout
-  - pip
-  - pip:
-      - xgboost
-      - optuna
-      - deap
-      - imbalanced-learn
-      - faiss-cpu
-      - shap
-      - lime
-      - scikit-posthocs
-      - arch
-      - memory_profiler
-      - ydata-profiling
-      - pytest
+  - jupyterlab
+  - ipykernel

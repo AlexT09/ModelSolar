@@ -1,0 +1,50 @@
+{
+ "python": "3.10.11",
+ "sklearn": "1.7.2",
+ "xgboost": "3.2.0",
+ "numpy": "2.2.6",
+ "pandas": "2.3.3",
+ "scipy": "1.15.3",
+ "procesador": "AMD64 Family 23 Model 160 Stepping 0, AuthenticAMD",
+ "nucleos": 8,
+ "sistema": "Windows-10-10.0.26300-SP0",
+ "hiperparametros_propuesto": [
+  {
+   "alpha_comun": 100.0,
+   "alpha_planta": 300.0,
+   "vida_media": 14.0
+  },
+  {
+   "alpha_comun": 10.0,
+   "alpha_planta": 300.0,
+   "vida_media": 7.0
+  },
+  {
+   "alpha_comun": 10.0,
+   "alpha_planta": 100.0,
+   "vida_media": 14.0
+  },
+  {
+   "alpha_comun": 10.0,
+   "alpha_planta": 300.0,
+   "vida_media": 7.0
+  },
+  {
+   "alpha_comun": 100.0,
+   "alpha_planta": 100.0,
+   "vida_media": 14.0
+  },
+  {
+   "alpha_comun": 10.0,
+   "alpha_planta": 100.0,
+   "vida_media": 7.0
+  }
+ ],
+ "fijos_propuesto": {
+  "alpha_comun": 10.0,
+  "alpha_planta": 300.0,
+  "vida_media": 7.0
+ },
+ "permutacion_p": 0.004975124378109453,
+ "r2_permutacion_obs": 0.5231960311069117
+}

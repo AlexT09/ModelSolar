@@ -1,19 +1,19 @@
 version: 1
 project:
-  title: 'Aptitud solar fotovoltaica: del índice del dataset a la generación real'
-  description: Proyecto de Machine Learning, Universidad del Norte. EDA corregido, benchmark de modelos base, experimento de 140 combinaciones y línea de Colombia.
+  title: 'Factor de capacidad diario de plantas solares en Colombia'
+  description: Proyecto de Machine Learning, Universidad del Norte. Base de generación real y clima de 16 plantas colombianas, modelos de regresión de referencia y un Ridge jerárquico con nivel adaptativo.
   authors:
     - name: Jesús David Arévalo Montilla
     - name: Enmanuel David Díaz Molinares
     - name: Alex David Terán Meza
   keywords:
-    - aptitud solar
-    - fotovoltaica
-    - validación espacial
-    - optimización de hiperparámetros
+    - energía solar
+    - factor de capacidad
+    - Ridge jerárquico
+    - validación espacio-temporal
   license: CC-BY-NC-SA-4.0
   github: https://github.com/AlexT09/ModelSolar
-  thumbnail: figuras/fig_mapa_clases_e3.png
+  thumbnail: figuras/fig_fc_vs_radiacion.png
   bibliography:
     - libro/referencias.bib
   exclude:
@@ -24,48 +24,18 @@ project:
   toc:
     - file: libro/index.md
       title: Inicio
-    - title: Datos y EDA
-      children:
-        - file: notebooks/EDA_Corregido(Entregable 3).ipynb
-          title: EDA corregido
-    - title: Modelos base
-      children:
-        - file: notebooks/Benchmark_Modelos_Base.ipynb
-          title: Benchmark de modelos base
-    - title: Experimento de 140 combinaciones
-      children:
-        - file: notebooks/Experimento_1_Diseno.ipynb
-          title: 1. Diseño
-        - file: notebooks/Experimento_2_Clasificacion.ipynb
-          title: 2. Clasificación
-        - file: notebooks/Experimento_3_Regresion.ipynb
-          title: 3. Regresión
-        - file: notebooks/Experimento_4_Optimizadores.ipynb
-          title: 4. Optimizadores
-        - file: notebooks/Experimento_5_Computacional.ipynb
-          title: 5. Optimización computacional
-        - file: notebooks/Experimento_6_Estadistica.ipynb
-          title: 6. Estadística formal
-        - file: notebooks/Experimento_7_Interpretabilidad.ipynb
-          title: 7. Interpretabilidad
-    - title: Línea de Colombia
-      children:
-        - file: notebooks/Clima_a_Generacion_Colombia.ipynb
-          title: Clima y generación real
-        - file: notebooks/Benchmark_Colombia.ipynb
-          title: Benchmark de Colombia
-    - title: Resumen final
-      children:
-        - file: libro/Resumen_final.md
-          title: Resumen del proyecto
-        - file: notebooks/Resumen_Final.ipynb
-          title: Cuadros del experimento
+    - file: notebooks/Clima_a_Generacion_Colombia.ipynb
+      title: Datos de XM y Open-Meteo
+    - file: notebooks/Modelo_Propuesto_Colombia.ipynb
+      title: Modelos y modelo propuesto
+    - file: libro/Resumen_final.md
+      title: Resumen del proyecto
 site:
   template: book-theme
   options:
     logo: libro/assets/logo.svg
     logo_dark: libro/assets/logo-oscuro.svg
-    logo_text: Aptitud solar fotovoltaica
+    logo_text: Solar en Colombia
     logo_alt: Sol sobre un panel solar
     favicon: libro/assets/favicon.svg
     style: libro/assets/estilo.css

@@ -1,107 +1,78 @@
 # Resumen del proyecto
 
-Este resumen recorre el proyecto desde la recolección de datos hasta los siete experimentos. Las cifras salen de las corridas de octubre de 2026.
+Este resumen recorre el proyecto desde la pregunta hasta las conclusiones. Las cifras salen del cuaderno
+`Modelo_Propuesto_Colombia.ipynb`, que es también la fuente de los resultados del artículo en `paper/`.
 
 | Cuaderno | Qué hace |
 |---|---|
-| `EDA_Corregido(Entregable 3).ipynb` | Limpia y explora la base mundial y genera `dataset_eda_corregido.csv`. |
-| `Benchmark_Modelos_Base.ipynb` | Corre los modelos base sobre la base mundial. |
-| `Clima_a_Generacion_Colombia.ipynb` | Construye la base de generación real de Colombia y prueba modelos preliminares. |
-| `Benchmark_Colombia.ipynb` | Corre los modelos base sobre los datos de Colombia. |
-| `Experimento_1_Diseno.ipynb` a `Experimento_7_Interpretabilidad.ipynb` | Diseño, clasificación, regresión, optimizadores, rendimiento computacional, pruebas estadísticas e interpretabilidad. |
-| `Resumen_Final.ipynb` | Síntesis con las tablas y figuras de la ejecución completa. |
+| `Clima_a_Generacion_Colombia.ipynb` | Descarga la generación de XM y el clima de Open-Meteo, empareja las plantas con sus coordenadas, arma la tabla diaria y hace el EDA. |
+| `Modelo_Propuesto_Colombia.ipynb` | Corre los modelos de referencia y el modelo propuesto con el mismo protocolo, y hace las pruebas estadísticas, la ablación y las pruebas de sobreajuste. |
 
-## 1. La pregunta original y cómo evolucionó
+## 1. La pregunta
 
-Arrancamos queriendo predecir la aptitud de un sitio para albergar una planta solar a partir de datos climáticos globales. Tomamos el dataset de Mantilla-Guerra et al. (2026), que trae un índice de aptitud solar (`solar_aptitude`). Al revisar la fórmula del paper vimos que el índice se calcula solo con variables de terreno (pendiente, orientación, sombreado y curvatura) y que el clima no influye. Por eso el proyecto quedó en dos líneas:
+¿Cuánto de lo que produce cada día una planta solar colombiana se explica con el clima de ese día? El proyecto empezó con un dataset
+mundial de plantas y su índice de aptitud solar, pero ese índice resultó depender del terreno y de la región, no del clima. Por eso
+pasamos a trabajar con generación real. El trabajo con el dataset mundial quedó guardado en la etiqueta `linea-mundial` del repositorio.
 
-1. Modelar el índice topográfico del dataset global para evaluar su generalización espacial.
-2. Construir una base propia con generación real de plantas colombianas para ver cuánto influye el clima.
+## 2. Los datos
 
-## 2. Los datos recolectados
+Juntamos tres fuentes públicas: la generación hora a hora y la capacidad diaria de XM, el clima por hora de Open-Meteo (radiación,
+nubosidad, temperatura, humedad y viento) y las coordenadas de cada planta, del dataset de Mantilla-Guerra et al. (2026) y de las
+fichas de Global Energy Monitor. XM no publica coordenadas, así que cada planta se emparejó a mano por nombre y capacidad.
 
-Juntamos información de cuatro fuentes: el dataset de Mantilla-Guerra (con potencial solar y datos topográficos), el Global Energy Monitor (coordenadas y nombres), XM, el operador eléctrico de Colombia (generación real hora a hora) y Open-Meteo (radiación, nubosidad, viento, temperatura y humedad).
-
-En la base mundial quitamos filas rotas, eliminamos más de mil duplicados y tratamos vacíos que seguían un patrón. Quedaron 57,976 plantas y 15 predictoras. Para Colombia armamos una serie con 8,589 días planta de 16 plantas con coordenadas verificadas.
-
-![Esquema del EDA](../figuras/fig_pipeline_eda_mundial.png)
+El resultado son 8,589 días-planta de 16 plantas en 6 zonas, de enero de 2024 a febrero de 2026. Se predice una sola cosa: el factor
+de capacidad (FC) diario, la energía del día dividida entre la de un día completo a plena capacidad.
 
 ![Esquema de la base de Colombia](../figuras/fig_pipeline_clima.png)
 
 ![EDA de la base de Colombia](../figuras/fig_eda_base_colombia.png)
 
-## 3. Qué mide el índice global
+## 3. Lo que muestra el EDA
 
-El hallazgo central del EDA es que el índice casi no correlaciona con la pendiente, aunque esta pesa el 40 % de su fórmula, y que tiene una correlación de +0.58 con la longitud. Un modelo entrenado en dos continentes tiene un R² negativo al predecir en un tercero. Todo apunta a que el índice recoge sobre todo el bloque o lote de procesamiento (por ejemplo, el europeo) y poco de una regla topográfica universal.
-
-Por eso evaluamos todo con bloques espaciales de 5° × 5°. Al partir los datos al azar, las plantas vecinas se mezclaban y las métricas salían muy optimistas.
-
-## 4. Diseño experimental
-
-Con la advertencia espacial en mente, ajustamos los hiperparámetros con validación cruzada anidada: un bucle externo por bloques geográficos y un bucle interno que busca hiperparámetros.
-
-Comparamos modelos lineales (logística, Ridge, Lasso) con métodos más flexibles (KNN, SVM y, después, Random Forest y XGBoost). Para el desbalance de clases (Baja tiene solo el 3 %) probamos `class_weight` (darle más peso a la clase pequeña en la función de costo), SMOTE y ADASYN. Los optimizadores fueron grid search, random search, optimización bayesiana (Optuna) y un algoritmo genético con una población de 6 individuos.
-
-## 5. Resultados y métricas clave
-
-En la base mundial, Random Forest y XGBoost llegan a un F1 macro de 0.89 y un R² de 0.90, y el SVM con kernel a 0.82 y 0.81 en el benchmark base. Los modelos lineales quedan en 0.60 de F1 y 0.48 de R². Parte de ese éxito viene de que los modelos identifican la región de la planta: sin latitud y longitud el desempeño baja mucho (el R² de KNN pasa de 0.79 a 0.48).
-
-En la base de Colombia pasa lo contrario. El factor de capacidad (FC) es casi proporcional a la radiación que recibe el panel, y un modelo lineal como Lasso explica un R² de 0.47 del sube y baja diario de la planta, igual o mejor que modelos más complejos, que tienden a sobreajustarse a las 6 zonas disponibles. Cada kWh/m² de radiación suma alrededor de 4.7 puntos al FC.
+- El 16 % de la variación del FC está entre plantas y el 84 % es el sube y baja diario de cada planta. El nivel de cada planta depende
+  de su tecnología (seguidores, relación DC/AC), que no está en los datos, así que predecimos la variación dentro de cada planta.
+- El FC sube casi en línea recta con la radiación: unos 4.7 puntos de FC por cada kWh/m² más, cerca de lo que predice la física.
+- Las otras variables del clima están muy ligadas a la radiación, y la temperatura sale con correlación positiva solo porque los días
+  soleados son más cálidos.
 
 ![FC contra radiación por planta](../figuras/fig_fc_vs_radiacion.png)
 
-![Benchmark mundial](../figuras/fig_benchmark_modelos.png)
+## 4. Cómo se evalúa
 
-![ROC y matriz de confusión, base mundial](../figuras/fig_benchmark_roc_confusion.png)
+Cada planta se parte en el tiempo (la primera mitad de sus días es el pasado y la segunda se usa para medir) y en cada ronda se deja
+fuera una zona completa, porque las plantas cercanas comparten el clima del día. Los hiperparámetros se eligen con validación anidada.
+Con una partición aleatoria, en cambio, los resultados salen inflados, porque días vecinos y plantas cercanas quedan a los dos lados.
 
-![Efecto del ajuste, base mundial](../figuras/fig_benchmark_ajuste.png)
+## 5. El modelo propuesto
 
-![Benchmark de Colombia](../figuras/fig_benchmark_colombia.png)
+Los modelos de referencia tratan a todas las plantas igual y fijan su nivel con el pasado. Cuando una planta cambia de nivel, como LA LOMA,
+el error se vuelve sistemático: un modelo lineal pasa de un R² de 0.40 con el nivel conocido a −0.42 con el nivel estimado del pasado.
 
-![ROC y matriz de confusión, Colombia](../figuras/fig_benchmark_colombia_roc_confusion.png)
+El **Ridge jerárquico con nivel adaptativo** suma una respuesta al clima común a todas las plantas, un ajuste propio de cada planta que
+se encoge hacia la común y un nivel que se corrige con la generación observada hasta el día anterior. Todo se resuelve con fórmulas
+cerradas, así que es rápido.
 
-![Comparativa de todos los modelos](../figuras/fig_resumen_comparativa.png)
+## 6. Resultados
 
-![Efecto de las técnicas de balanceo](../figuras/fig_exp_balanceo.png)
+- En regresión, el modelo propuesto llega a un R² mediano dentro de planta de 0.525, frente a 0.469 de Lasso, el mejor modelo de
+  referencia. Es mejor que Lasso en 15 de las 16 plantas y a diferencia de todos los modelos de referencia, no tiene plantas con R² negativo.
+- Los modelos más flexibles (Random Forest, XGBoost, SVR y Kernel Ridge) no superan a Lasso: con cinco variables de clima y una relación
+  casi lineal, la flexibilidad no ayuda. También son mucho más lentos.
+- Como el modelo propuesto usa la generación de los días anteriores, también lo comparamos con Lasso usando esa misma información.
+  Con el FC de ayer como variable, Lasso mejora poco; con el mismo nivel adaptativo, queda muy cerca del modelo propuesto. Es decir, la
+  mayor parte de la ganancia viene de seguir el nivel de cada planta, y el ajuste propio de cada planta agrega una mejora pequeña.
+- Las pruebas de Wilcoxon y Diebold-Mariano respaldan las diferencias frente a los modelos de referencia, y la prueba de permutación y la
+  curva de aprendizaje no muestran sobreajuste.
+- La ablación muestra que el nivel adaptativo es el componente que más aporta, que el modelo funciona igual aunque la generación llegue
+  con una semana de retraso y que cambiar la radiación de Open-Meteo por la de ERA5 es lo que más empeora el resultado.
 
-![Curvas de desempeño anytime](../figuras/fig_exp_anytime.png)
+![R² dentro de planta del modelo propuesto, Lasso y Lasso con nivel adaptativo](../figuras/fig_r2_por_planta.png)
 
-![Evolución de la diversidad de la población genética (DEAP)](../figuras/fig_exp_diversidad.png)
+## 7. Conclusiones y lo que queda pendiente
 
-![Curvas ROC consolidadas](../figuras/fig_exp_roc.png)
+La radiación explica cerca de la mitad del sube y baja diario de una planta. El resto de la ganancia viene de seguir los cambios de
+nivel de cada planta con su generación reciente y, en menor medida, de tratar a cada planta como distinta; no de usar modelos más
+complejos.
 
-![Matrices de confusión de los mejores clasificadores](../figuras/fig_exp_confusion.png)
-
-![Predicciones frente a valores observados en regresión](../figuras/fig_exp_reg_tvp.png)
-
-![Diagnóstico de residuos y heterocedasticidad](../figuras/fig_exp_reg_residuos.png)
-
-![Curvas de calibración y error ECE](../figuras/fig_exp_calibracion.png)
-
-## 6. Las pruebas estadísticas
-
-Comparamos los modelos con Friedman y Nemenyi, DeLong, el conjunto de confianza de modelos y Diebold-Mariano (1995). En regresión, Random Forest es el único que queda en el conjunto de confianza al 90 %, y su d de Cohen sobre el RMSE frente a Ridge y Lasso es 10.01, un valor muy inestable con solo 5 pliegues. En clasificación, Random Forest y XGBoost no se distinguen entre sí. Clark-West muestra que incluir latitud y longitud mejora la predicción del Ridge (RMSE de 0.0962 con coordenadas y 0.1197 sin ellas, p < 0.001).
-
-![Diagrama de diferencia crítica de Nemenyi](../figuras/fig_exp_cd.png)
-
-## 7. Qué aprendimos sobre los modelos (interpretabilidad y rendimiento)
-
-KNN es rápido de entrenar y lento al predecir. Random Forest y XGBoost cargan su costo en el entrenamiento y predicen en fracciones de segundo. En el perfilado de una evaluación con SMOTE y XGBoost, el 80 % del tiempo se va en XGBoost y el pico de memoria fue de 621 MB, así que el límite es el procesador y no la memoria.
-
-SHAP muestra que la variable que más pesa es la longitud, y las variables de clima casi no pesan. SHAP y LIME no ordenan igual las variables (correlación de Spearman media de -0.30 en 30 plantas), pero comparten en promedio 3.1 de las 5 variables más importantes.
-
-![Complejidad computacional y escalamiento](../figuras/fig_exp_complejidad.png)
-
-![SHAP global en clasificación](../figuras/fig_exp_shap_clf.png)
-
-![SHAP global en regresión](../figuras/fig_exp_shap_reg.png)
-
-![Gráfico de cascada SHAP en observaciones individuales](../figuras/fig_exp_shap_cascada.png)
-
-![LIME frente a TreeSHAP en XGBoost](../figuras/fig_exp_lime_shap.png)
-
-## 8. Conclusiones y lo que queda pendiente
-
-El índice del dataset mundial depende sobre todo de la región y no del clima. Los modelos lo predicen muy bien si "saben" dónde están y fallan en continentes nuevos. En Colombia, en cambio, la radiación explica cerca de la mitad del comportamiento diario de una planta real, y un modelo lineal simple basta para capturarlo.
-
-Queda pendiente medir la tecnología de cada planta en Colombia (potencia DC real, tipo de seguidor), que probablemente explica buena parte de la diferencia de nivel entre plantas. También falta trabajar con radiación medida por estaciones en terreno, que podría subir el R² de alrededor de 0.5 que logramos con radiación modelada.
+Queda pendiente conseguir la tecnología de cada planta (potencia DC real y tipo de montaje), usar radiación medida en estaciones o por
+satélite en vez de modelada, y extender el modelo a pronósticos con varios días de anticipación.
