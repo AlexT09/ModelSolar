@@ -1,4 +1,4 @@
-# ModelSolar
+# ModelSolar: factor de capacidad diario de plantas solares en Colombia
 
 Proyecto de Machine Learning sobre aptitud solar fotovoltaica y predicción de generación real a partir de variables climáticas.
 
