@@ -34,7 +34,7 @@
 
 \author[1]{\fnm{Alex David} \sur{Terán Meza}}\email{talex@uninorte.edu.co}
 
-\affil*[1]{\orgdiv{Pregrado en Ciencia de Datos, Departamento de Matemáticas, Física y Ciencia de Datos}, \orgname{Universidad del Norte}, \orgaddress{\city{Barranquilla}, \country{Colombia}}}
+\affil*[1]{\orgdiv{Pregrado en Ciencia de Datos, Departamento de Matemáticas y Ciencia de Datos}, \orgname{Universidad del Norte}, \orgaddress{\city{Barranquilla}, \country{Colombia}}}
 
 \abstract{Predecir la producción diaria de una planta solar permite planear su aporte a la red, pero en Colombia no existe una base pública que reúna generación y clima por planta. Se construyó una con 8,589 días-planta de 16 plantas, entre 2024 y 2026, a partir de la generación de XM, el clima de Open-Meteo y coordenadas verificadas. Sobre ella se propone un Ridge jerárquico con nivel adaptativo, que combina una respuesta al clima común a todas las plantas, una desviación de cada planta encogida hacia la común y un nivel corregido con la generación del día anterior. La evaluación usa validación anidada que deja fuera una zona completa y el futuro de cada planta. El modelo propuesto explicó una mediana de 0.52 de la variación diaria dentro de cada planta, frente a 0.47 del mejor modelo de referencia (Lasso), y redujo el error absoluto relativo de 0.140 a 0.125, con mejor resultado en 15 de las 16 plantas; su protocolo completo tardó 2 segundos, frente a 162 de Random Forest y 39 de XGBoost. Cuando Lasso recibe la misma corrección de nivel llega a 0.52: la mayor parte de la ganancia viene de seguir el nivel de cada planta con su generación reciente, no de un modelo más flexible frente al clima.}
 
