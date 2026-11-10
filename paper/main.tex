@@ -56,12 +56,11 @@ Este trabajo hace tres aportes. Primero, una base de 8,589 días-planta de 16 pl
 % =====================================================================
 \section{Metodología}\label{sec:metodologia}
 
-La metodología sigue el orden del estudio: formulación, datos, modelos de referencia, modelo propuesto y protocolo experimental. Todo ajuste que dependa de los datos (nivel de cada planta, escalado e hiperparámetros) se calcula después de particionar y solo con las filas de entrenamiento o con el pasado de cada planta, para evitar fuga de información \cite{kaufman2012leakage}.
+La metodología sigue ocho partes: formulación del problema, datos y preprocesamiento, modelo propuesto, entrenamiento y optimización, modelos de referencia, protocolo de evaluación, diseño de la ablación y disponibilidad de código y datos. Todo ajuste que dependa de los datos (nivel de cada planta, escalado e hiperparámetros) se calcula después de particionar y solo con las filas de entrenamiento o con el pasado de cada planta, para evitar fuga de información \cite{kaufman2012leakage}.
 
 % ---------------------------------------------------------------------
-\subsection{Descripción del problema y del conjunto de datos}\label{subsec:datos}
 
-\subsubsection{Formulación del problema y notación}\label{subsubsec:formulacion}
+\subsection{Formulación del problema y notación}\label{subsec:formulacion}
 
 Sea $p \in \{1,\dots,P\}$, con $P=16$, el índice de una planta solar y $t \in \mathcal{T}_p$ un día con datos válidos de esa planta. Cada planta pertenece a una zona $g(p) \in \{1,\dots,G\}$, con $G=6$, que agrupa plantas a menos de 100\,km entre sí. La variable objetivo es el factor de capacidad (FC) diario,
 \begin{equation}
@@ -109,6 +108,10 @@ $R^2_p$ & $R^2$ dentro de la planta $p$ en su periodo de prueba\\
 \end{tabular}
 \end{table}
 
+% ---------------------------------------------------------------------
+
+\subsection{Datos, análisis exploratorio y preprocesamiento}\label{subsec:datos}
+
 \subsubsection{Descripción general}
 
 La base se construyó para este trabajo, porque ninguna fuente pública reúne generación y clima por planta en Colombia. Une tres fuentes: (i) la generación horaria (\texttt{Gene}) y la capacidad efectiva neta diaria (\texttt{CapEfecNeta}) de cada recurso solar, de la API pública de XM \cite{xm_api}; (ii) las coordenadas, el nombre y la capacidad de cada planta, del conjunto global de plantas solares de Mantilla-Guerra et al.\ \cite{mantillaguerra2026}, construido sobre el \emph{Global Solar Power Tracker} de febrero de 2026 \cite{gem2026solar}; y (iii) el clima horario en el sitio, de la API histórica de Open-Meteo \cite{zippenfenig2023openmeteo}, cuyo producto por defecto (\texttt{best\_match}) combina IFS HRES, ERA5 y ERA5-Land \cite{hersbach2020era5,munozsabater2021era5land}. La ventana va del 1 de enero de 2024 al 28 de febrero de 2026. Licencias: los datos de XM son públicos; Open-Meteo y GEM se distribuyen bajo CC BY 4.0, y el conjunto de Mantilla-Guerra et al.\ bajo CC BY-NC-SA 4.0, que permite este uso académico con atribución.
@@ -121,7 +124,7 @@ La tabla final tiene $n = 8{,}589$ días-planta de 16 plantas en 6 zonas, sin va
 
 \textit{Transform.} Como XM no publica coordenadas, cada recurso se emparejó por nombre y capacidad con el conjunto de Mantilla-Guerra et al.\ (diez plantas) o con la ficha pública de GEM contrastada con prensa (siete), con revisión manual; se descartaron las plantas sin ubicación confirmada. El FC se calcula con la Ec.~\eqref{eq:fc} usando la capacidad del mismo día, porque varias plantas crecen por etapas. Se eliminan los días sin registro o con 0\,kWh, los primeros 60 días de puesta en marcha de las plantas que arrancan en la ventana y las plantas con menos de 100 días útiles (ALMA II). El clima horario se resume por día: radiación como suma en kWh/m$^2$, nubosidad como media en las horas con sol y las demás variables como medias. Las zonas se forman con DBSCAN sobre la distancia de Haversine, con radio de 100\,km y un punto como mínimo, lo que une en una zona a las plantas encadenadas a menos de 100\,km \cite{roberts2017cv}. Para la ablación se construye un índice físico que corrige la radiación por la temperatura de celda \cite{skoplaki2009operating,skoplaki2009temperature}.
 
-\textit{Load.} El resultado es \texttt{tabla\_diaria\_colombia.csv}, una fila por planta y día, sin variables categóricas entre las covariables. El centrado (Ec.~\ref{eq:centrado}) y el escalado se calculan dentro de cada partición (Sección~\ref{subsec:config}). La semilla es 42 en todo el estudio.
+\textit{Load.} El resultado es \texttt{tabla\_diaria\_colombia.csv}, una fila por planta y día, sin variables categóricas entre las covariables. El centrado (Ec.~\ref{eq:centrado}) y el escalado se calculan dentro de cada partición (Sección~\ref{subsec:particiones}). La semilla es 42 en todo el estudio.
 
 \subsubsection{Análisis exploratorio}
 
@@ -159,65 +162,21 @@ De ahí salen las decisiones de preprocesamiento: se predice la variación dentr
 \label{fig:corr}
 \end{figure}
 
-% ---------------------------------------------------------------------
-\subsection{Modelos de referencia (baselines)}\label{subsec:sota}
+\subsubsection{Particiones y validación anidada}\label{subsec:particiones}
 
-Se comparan los principales modelos de regresión supervisada, en scikit-learn 1.7.2 \cite{pedregosa2011sklearn} y XGBoost 3.2.0 \cite{chen2016xgboost}, con la misma entrada $\tilde{\mathbf{x}}_{pt}$ estandarizada y las mismas particiones. Se incluyen dos referencias sin aprendizaje: el nivel de la planta, $\hat{\tilde{y}}_{pt} = 0$, y la persistencia, $\hat{y}_{pt} = y_{p,t-1}$.
-
-\textbf{Regresión lineal, Ridge y Lasso.} Estiman un modelo lineal por mínimos cuadrados, sin penalización o con penalización $\ell_2$ o $\ell_1$ \cite{hoerl1970ridge,tibshirani1996lasso}:
+La partición se hace antes de cualquier cálculo dependiente de los datos y combina un corte temporal y uno espacial. La primera mitad de los días de cada planta es su pasado, $\mathcal{T}^{\text{pas}}_p$, y la segunda mitad es su futuro, que solo se usa para medir. En cada pliegue externo se deja fuera una zona completa, porque plantas a menos de 100\,km comparten el clima del día \cite{roberts2017cv}:
 \begin{equation}
-\hat{\boldsymbol{\beta}} = \arg\min_{\beta_0,\boldsymbol{\beta}} \sum_{i=1}^{n}\bigl(\tilde{y}_i - \beta_0 - \boldsymbol{\beta}^\top\tilde{\mathbf{x}}_i\bigr)^2 + \lambda R(\boldsymbol{\beta}), \qquad R(\boldsymbol{\beta}) = \lVert\boldsymbol{\beta}\rVert_2^2 \ \text{o}\ \lVert\boldsymbol{\beta}\rVert_1 .
-\label{eq:ridge_lasso}
+\mathcal{D}^{\text{ent}}_z = \{(p,t): g(p)\neq z,\ t\in\mathcal{T}^{\text{pas}}_p\}, \qquad
+\mathcal{D}^{\text{pru}}_z = \{(p,t): g(p)= z,\ t\notin\mathcal{T}^{\text{pas}}_p\},
+\label{eq:particion}
 \end{equation}
-Son la referencia natural porque la relación física entre radiación y FC es casi lineal.
-
-\textbf{$k$ vecinos más cercanos (KNN).} Promedia el objetivo de los $k$ vecinos más cercanos en distancia euclidiana \cite{cover1967nn}, $\hat{f}(\tilde{\mathbf{x}}) = k^{-1}\sum_{i \in \mathcal{N}_k(\tilde{\mathbf{x}})} \tilde{y}_i$; capta no linealidades locales, como la saturación del FC en días muy soleados.
-
-\textbf{SVR y Kernel Ridge con kernel RBF.} La SVR ajusta $f(\tilde{\mathbf{x}}) = \mathbf{w}^\top\phi(\tilde{\mathbf{x}}) + b$ bajo la pérdida $\varepsilon$-insensible \cite{smola2004svr}, y Kernel Ridge resuelve la Ec.~\eqref{eq:ridge_lasso} con penalización $\ell_2$ en el espacio del kernel \cite{saunders1998krr}:
-\begin{equation}
-\min_{\mathbf{w},b}\ \tfrac{1}{2}\lVert\mathbf{w}\rVert_2^2 + C\sum_{i=1}^{n}\max\bigl(0,\ |\tilde{y}_i - f(\tilde{\mathbf{x}}_i)| - \varepsilon\bigr), \qquad
-\hat{f}_{\text{KR}}(\tilde{\mathbf{x}}) = \mathbf{k}(\tilde{\mathbf{x}})^\top (\mathbf{K} + \lambda \mathbf{I})^{-1}\tilde{\mathbf{y}},
-\label{eq:svr}
-\end{equation}
-con $K(\mathbf{x},\mathbf{x}') = \exp(-\gamma\lVert\mathbf{x}-\mathbf{x}'\rVert_2^2)$. Representan modelos no lineales suaves.
-
-\textbf{Random Forest y XGBoost.} Random Forest promedia $B$ árboles entrenados sobre muestras bootstrap con un subconjunto aleatorio de variables en cada corte \cite{breiman2001rf}, $\hat{f}(\tilde{\mathbf{x}}) = B^{-1}\sum_{b=1}^{B} T_b(\tilde{\mathbf{x}};\Theta_b)$. XGBoost construye un ensamble aditivo de $M$ árboles minimizando una pérdida regularizada \cite{chen2016xgboost}:
-\begin{equation}
-\mathcal{L} = \sum_{i=1}^{n}\ell\bigl(\tilde{y}_i,\hat{\tilde{y}}_i\bigr) + \sum_{m=1}^{M}\Bigl(\gamma T_m + \tfrac{1}{2}\lambda\lVert\mathbf{w}_m\rVert_2^2\Bigr),
-\label{eq:xgb}
-\end{equation}
-donde $T_m$ es el número de hojas del árbol $m$ y $\mathbf{w}_m$ sus pesos. Son los modelos más flexibles de la comparación.
-
-\textbf{Referencias con la misma información.} El modelo propuesto usa la generación observada hasta el día anterior, que los modelos de referencia no reciben. Para separar el aporte de esa información del aporte del modelo, Lasso se evalúa también con ella de dos formas: con el FC del día anterior como una covariable más (\emph{Lasso + FC de ayer}) y con el mismo nivel adaptativo del modelo propuesto, sin desviaciones por planta (\emph{Lasso + nivel adaptativo}, Ec.~\eqref{eq:nivel}).
-
-\textbf{Hiperparámetros.} Cada modelo se evalúa con sus valores por defecto y con búsqueda en rejilla dentro de la validación anidada (Sección~\ref{subsec:config}), sobre los espacios de la Tabla~\ref{tab:rejillas}.
-
-\begin{table}[t]
-\caption{Espacios de búsqueda de hiperparámetros y número de combinaciones por pliegue externo.}
-\label{tab:rejillas}
-\centering
-\footnotesize
-\begin{tabular}{@{}llc@{}}
-\toprule
-Modelo & Rejilla & Comb.\\
-\midrule
-Ridge & $\lambda \in \{10^{-3},10^{-2},\dots,10^{3}\}$ & 7\\
-Lasso; Lasso + FC de ayer & $\lambda \in \{10^{-5},10^{-4},10^{-3},10^{-2}\}$ & 4\\
-KNN & $k \in \{5,15,25,51,101\}$; pesos uniformes o por distancia & 10\\
-SVR (RBF) & $C \in \{0.1,1,10\}$; $\varepsilon \in \{0.005,0.02\}$; $\gamma \in \{\text{scale},0.1\}$ & 12\\
-Kernel Ridge (RBF) & $\lambda \in \{0.1,1,10\}$; $\gamma \in \{0.01,0.1,1\}$ & 9\\
-Random Forest (300 árboles) & profundidad $\in \{4,8,\infty\}$; mínimo por hoja $\in \{5,20,50\}$; variables $\in \{0.5,1\}$ & 18\\
-XGBoost & $M \in \{200,500\}$; profundidad $\in \{2,4,6\}$; tasa de aprendizaje $\in \{0.03,0.1,0.3\}$ & 18\\
-Lasso + nivel adaptativo & $\lambda \in \{10^{-4},10^{-3}\}$; $h \in \{7,14,30\}$ & 6\\
-Ridge jerárquico (propuesto) & $\lambda_\beta \in \{10,100\}$; $\lambda_b \in \{30,100,300\}$; $h \in \{7,14,30\}$ & 18\\
-\botrule
-\end{tabular}
-\end{table}
+con $z = 1,\dots,6$. El pasado de las plantas de la zona de prueba solo se usa para calcular $\mu_p$, $\bar{\mathbf{x}}_p$ y, en el modelo propuesto, $\mathbf{b}_p$; nunca entra al entrenamiento de la parte común. El escalado va dentro de un \texttt{Pipeline} ajustado con $\mathcal{D}^{\text{ent}}_z$ \cite{kaufman2012leakage}. Los hiperparámetros se eligen con validación anidada \cite{varma2006bias,cawley2010overfitting}: el bucle interno deja fuera una de las cinco zonas de entrenamiento a la vez y elige por $R^2$; el bucle externo solo mide. Como contraste, los modelos de referencia por defecto se repiten con una partición aleatoria de filas en 5 pliegues, para medir cuánto se sobreestima el desempeño sin este diseño.
 
 % ---------------------------------------------------------------------
+
 \subsection{Modelo propuesto}\label{subsec:propuesto}
 
-\textbf{Idea central.} Los modelos de referencia aprenden una sola respuesta al clima para todas las plantas y fijan el nivel de cada una con su pasado. Ninguna de las dos suposiciones es segura en esta base: la respuesta a la radiación depende de la tecnología de cada planta, y una planta puede cambiar de nivel entre su pasado y su periodo de prueba por ampliaciones, fallas o degradación. El Ridge jerárquico con nivel adaptativo separa la predicción en tres partes: una respuesta común al clima, una desviación de cada planta que se encoge hacia la común y un nivel que se corrige con la generación observada (Figura~\ref{fig:diagrama}).
+\textbf{Idea central.} Los modelos de regresión clásicos (Sección~\ref{subsec:sota}) aprenden una sola respuesta al clima para todas las plantas y fijan el nivel de cada una con su pasado. Ninguna de las dos suposiciones es segura en esta base: la respuesta a la radiación depende de la tecnología de cada planta, y una planta puede cambiar de nivel entre su pasado y su periodo de prueba por ampliaciones, fallas o degradación. El Ridge jerárquico con nivel adaptativo separa la predicción en tres partes: una respuesta común al clima, una desviación de cada planta que se encoge hacia la común y un nivel que se corrige con la generación observada (Figura~\ref{fig:diagrama}).
 
 \textbf{Formulación.} Sea $\mathbf{z}_{pt}$ el vector $\tilde{\mathbf{x}}_{pt}$ estandarizado con las filas de entrenamiento. La predicción es
 \begin{equation}
@@ -272,22 +231,71 @@ donde $h$ es la vida media en días observados. El nivel de un día usa solo res
 
 \textbf{Complejidad.} Con $n$ filas de entrenamiento y $d=5$ covariables, la Ec.~\eqref{eq:comun} cuesta $O(n d^2 + d^3)$; las desviaciones, $O(n_p d^2 + d^3)$ por planta; y el nivel, $O(n_p)$. El total es $O(n d^2 + P d^3)$ en tiempo y $O(n d)$ en memoria, frente a $O(n^2)$ a $O(n^3)$ de los métodos de kernel. El modelo tiene $d+1+Pd = 86$ parámetros entrenables y tres hiperparámetros.
 
-\subsubsection{Entrenamiento y optimización}
+% ---------------------------------------------------------------------
 
-El modelo no usa un optimizador iterativo: las Ecs.~\eqref{eq:comun} y \eqref{eq:planta} tienen solución cerrada, y el nivel se calcula en una pasada, así que no hay tasa de aprendizaje, tamaño de lote ni parada temprana. Los hiperparámetros se buscan igual que los de referencia, en rejilla dentro del bucle interno y seleccionando por $R^2$, con 18 combinaciones (Tabla~\ref{tab:rejillas}), el mismo presupuesto que Random Forest y XGBoost. En el bucle interno, el pasado de la zona de validación se parte de nuevo por la mitad: la primera mitad estima $\mathbf{b}_p$ y la segunda mide, como en el bucle externo. El ajuste es determinista.
+\subsection{Entrenamiento y optimización}\label{subsec:entrenamiento}
+
+El modelo no usa un optimizador iterativo: las Ecs.~\eqref{eq:comun} y \eqref{eq:planta} tienen solución cerrada, y el nivel se calcula en una pasada, así que no hay tasa de aprendizaje, tamaño de lote ni parada temprana. Los hiperparámetros de todos los modelos se buscan en rejilla dentro del bucle interno de la validación anidada (Sección~\ref{subsec:particiones}), seleccionando por $R^2$. El modelo propuesto explora 18 combinaciones (Tabla~\ref{tab:rejillas}), el mismo presupuesto que Random Forest y XGBoost. En el bucle interno, el pasado de la zona de validación se parte de nuevo por la mitad: la primera mitad estima $\mathbf{b}_p$ y la segunda mide, como en el bucle externo. El ajuste es determinista.
 
 % ---------------------------------------------------------------------
-\subsection{Configuración experimental}\label{subsec:config}
 
-\subsubsection{Particiones y validación anidada}
+\subsection{Modelos de referencia (baselines)}\label{subsec:sota}
 
-La partición se hace antes de cualquier cálculo dependiente de los datos y combina un corte temporal y uno espacial. La primera mitad de los días de cada planta es su pasado, $\mathcal{T}^{\text{pas}}_p$, y la segunda mitad es su futuro, que solo se usa para medir. En cada pliegue externo se deja fuera una zona completa, porque plantas a menos de 100\,km comparten el clima del día \cite{roberts2017cv}:
+Se comparan los principales modelos de regresión supervisada, en scikit-learn 1.7.2 \cite{pedregosa2011sklearn} y XGBoost 3.2.0 \cite{chen2016xgboost}, con la misma entrada $\tilde{\mathbf{x}}_{pt}$ estandarizada y las mismas particiones. Se incluyen dos referencias sin aprendizaje: el nivel de la planta, $\hat{\tilde{y}}_{pt} = 0$, y la persistencia, $\hat{y}_{pt} = y_{p,t-1}$.
+
+\textbf{Regresión lineal, Ridge y Lasso.} Estiman un modelo lineal por mínimos cuadrados, sin penalización o con penalización $\ell_2$ o $\ell_1$ \cite{hoerl1970ridge,tibshirani1996lasso}:
 \begin{equation}
-\mathcal{D}^{\text{ent}}_z = \{(p,t): g(p)\neq z,\ t\in\mathcal{T}^{\text{pas}}_p\}, \qquad
-\mathcal{D}^{\text{pru}}_z = \{(p,t): g(p)= z,\ t\notin\mathcal{T}^{\text{pas}}_p\},
-\label{eq:particion}
+\hat{\boldsymbol{\beta}} = \arg\min_{\beta_0,\boldsymbol{\beta}} \sum_{i=1}^{n}\bigl(\tilde{y}_i - \beta_0 - \boldsymbol{\beta}^\top\tilde{\mathbf{x}}_i\bigr)^2 + \lambda R(\boldsymbol{\beta}), \qquad R(\boldsymbol{\beta}) = \lVert\boldsymbol{\beta}\rVert_2^2 \ \text{o}\ \lVert\boldsymbol{\beta}\rVert_1 .
+\label{eq:ridge_lasso}
 \end{equation}
-con $z = 1,\dots,6$. El pasado de las plantas de la zona de prueba solo se usa para calcular $\mu_p$, $\bar{\mathbf{x}}_p$ y, en el modelo propuesto, $\mathbf{b}_p$; nunca entra al entrenamiento de la parte común. El escalado va dentro de un \texttt{Pipeline} ajustado con $\mathcal{D}^{\text{ent}}_z$ \cite{kaufman2012leakage}. Los hiperparámetros se eligen con validación anidada \cite{varma2006bias,cawley2010overfitting}: el bucle interno deja fuera una de las cinco zonas de entrenamiento a la vez y elige por $R^2$; el bucle externo solo mide. Como contraste, los modelos de referencia por defecto se repiten con una partición aleatoria de filas en 5 pliegues, para medir cuánto se sobreestima el desempeño sin este diseño.
+Son la referencia natural porque la relación física entre radiación y FC es casi lineal.
+
+\textbf{$k$ vecinos más cercanos (KNN).} Promedia el objetivo de los $k$ vecinos más cercanos en distancia euclidiana \cite{cover1967nn}, $\hat{f}(\tilde{\mathbf{x}}) = k^{-1}\sum_{i \in \mathcal{N}_k(\tilde{\mathbf{x}})} \tilde{y}_i$; capta no linealidades locales, como la saturación del FC en días muy soleados.
+
+\textbf{SVR y Kernel Ridge con kernel RBF.} La SVR ajusta $f(\tilde{\mathbf{x}}) = \mathbf{w}^\top\phi(\tilde{\mathbf{x}}) + b$ bajo la pérdida $\varepsilon$-insensible \cite{smola2004svr}, y Kernel Ridge resuelve la Ec.~\eqref{eq:ridge_lasso} con penalización $\ell_2$ en el espacio del kernel \cite{saunders1998krr}:
+\begin{equation}
+\min_{\mathbf{w},b}\ \tfrac{1}{2}\lVert\mathbf{w}\rVert_2^2 + C\sum_{i=1}^{n}\max\bigl(0,\ |\tilde{y}_i - f(\tilde{\mathbf{x}}_i)| - \varepsilon\bigr), \qquad
+\hat{f}_{\text{KR}}(\tilde{\mathbf{x}}) = \mathbf{k}(\tilde{\mathbf{x}})^\top (\mathbf{K} + \lambda \mathbf{I})^{-1}\tilde{\mathbf{y}},
+\label{eq:svr}
+\end{equation}
+con $K(\mathbf{x},\mathbf{x}') = \exp(-\gamma\lVert\mathbf{x}-\mathbf{x}'\rVert_2^2)$. Representan modelos no lineales suaves.
+
+\textbf{Random Forest y XGBoost.} Random Forest promedia $B$ árboles entrenados sobre muestras bootstrap con un subconjunto aleatorio de variables en cada corte \cite{breiman2001rf}, $\hat{f}(\tilde{\mathbf{x}}) = B^{-1}\sum_{b=1}^{B} T_b(\tilde{\mathbf{x}};\Theta_b)$. XGBoost construye un ensamble aditivo de $M$ árboles minimizando una pérdida regularizada \cite{chen2016xgboost}:
+\begin{equation}
+\mathcal{L} = \sum_{i=1}^{n}\ell\bigl(\tilde{y}_i,\hat{\tilde{y}}_i\bigr) + \sum_{m=1}^{M}\Bigl(\gamma T_m + \tfrac{1}{2}\lambda\lVert\mathbf{w}_m\rVert_2^2\Bigr),
+\label{eq:xgb}
+\end{equation}
+donde $T_m$ es el número de hojas del árbol $m$ y $\mathbf{w}_m$ sus pesos. Son los modelos más flexibles de la comparación.
+
+\textbf{Referencias con la misma información.} El modelo propuesto usa la generación observada hasta el día anterior, que los modelos de referencia no reciben. Para separar el aporte de esa información del aporte del modelo, Lasso se evalúa también con ella de dos formas: con el FC del día anterior como una covariable más (\emph{Lasso + FC de ayer}) y con el mismo nivel adaptativo del modelo propuesto, sin desviaciones por planta (\emph{Lasso + nivel adaptativo}, Ec.~\eqref{eq:nivel}).
+
+\textbf{Hiperparámetros.} Cada modelo se evalúa con sus valores por defecto y con búsqueda en rejilla dentro de la validación anidada (Sección~\ref{subsec:particiones}), sobre los espacios de la Tabla~\ref{tab:rejillas}.
+
+\begin{table}[t]
+\caption{Espacios de búsqueda de hiperparámetros y número de combinaciones por pliegue externo.}
+\label{tab:rejillas}
+\centering
+\footnotesize
+\begin{tabular}{@{}llc@{}}
+\toprule
+Modelo & Rejilla & Comb.\\
+\midrule
+Ridge & $\lambda \in \{10^{-3},10^{-2},\dots,10^{3}\}$ & 7\\
+Lasso; Lasso + FC de ayer & $\lambda \in \{10^{-5},10^{-4},10^{-3},10^{-2}\}$ & 4\\
+KNN & $k \in \{5,15,25,51,101\}$; pesos uniformes o por distancia & 10\\
+SVR (RBF) & $C \in \{0.1,1,10\}$; $\varepsilon \in \{0.005,0.02\}$; $\gamma \in \{\text{scale},0.1\}$ & 12\\
+Kernel Ridge (RBF) & $\lambda \in \{0.1,1,10\}$; $\gamma \in \{0.01,0.1,1\}$ & 9\\
+Random Forest (300 árboles) & profundidad $\in \{4,8,\infty\}$; mínimo por hoja $\in \{5,20,50\}$; variables $\in \{0.5,1\}$ & 18\\
+XGBoost & $M \in \{200,500\}$; profundidad $\in \{2,4,6\}$; tasa de aprendizaje $\in \{0.03,0.1,0.3\}$ & 18\\
+Lasso + nivel adaptativo & $\lambda \in \{10^{-4},10^{-3}\}$; $h \in \{7,14,30\}$ & 6\\
+Ridge jerárquico (propuesto) & $\lambda_\beta \in \{10,100\}$; $\lambda_b \in \{30,100,300\}$; $h \in \{7,14,30\}$ & 18\\
+\botrule
+\end{tabular}
+\end{table}
+
+% ---------------------------------------------------------------------
+
+\subsection{Protocolo de evaluación}\label{subsec:evaluacion}
 
 \subsubsection{Métricas}
 
@@ -306,7 +314,9 @@ La unidad de muestreo es la planta y no el día. El intervalo de confianza del 9
 
 Se aplican dos pruebas. En la prueba de permutación se barajan los FC del pasado dentro de cada planta, lo que impide que la parte común y las desviaciones aprendan del clima, y se repite el protocolo 200 veces \cite{ojala2010permutation}; el nivel adaptativo sigue usando la generación observada, así que el nulo mide lo que se logra sin aprender del clima. En la curva de aprendizaje se entrena con el 10, 25, 50, 75 y 100\,\% de las filas de entrenamiento. Ambas usan los hiperparámetros más elegidos en la validación anidada.
 
-\subsubsection{Estudio de ablación}
+% ---------------------------------------------------------------------
+
+\subsection{Diseño del estudio de ablación}\label{subsec:ablacion}
 
 Cada variante cambia un solo componente, repite la búsqueda en su propia rejilla y se evalúa con el mismo protocolo:
 \begin{itemize}
@@ -319,9 +329,12 @@ Cada variante cambia un solo componente, repite la búsqueda en su propia rejill
 \item \textbf{Índice físico} en lugar de la radiación: ¿mejora la corrección por temperatura de celda?
 \end{itemize}
 
-\subsubsection{Software, hardware y reproducibilidad}
+% ---------------------------------------------------------------------
 
-Los experimentos usan Python 3.10.11, scikit-learn 1.7.2, XGBoost 3.2.0, pandas 2.3.3, NumPy 2.2.6 y SciPy 1.15.3, en un portátil con procesador AMD Ryzen 5 7520U (4 núcleos, 8 hilos), 8\,GB de RAM y Windows 11, con la búsqueda paralela en todos los hilos. La partición es determinista y los modelos estocásticos usan la semilla 42, así que cada configuración se ejecuta una vez; la variabilidad se reporta entre plantas.
+\subsection{Disponibilidad de código y datos}\label{subsec:disponibilidad}
+
+El código está en \url{https://github.com/AlexT09/ModelSolar}: la base \texttt{tabla\_diaria\_colombia.csv} se regenera desde las fuentes públicas con \texttt{Clima\_a\_Generacion\_Colombia.ipynb}, todos los resultados con \texttt{Modelo\_Propuesto\_Colombia.ipynb} y las figuras con \texttt{paper/figures/make\_figures.py}. Los experimentos usan Python 3.10.11, scikit-learn 1.7.2, XGBoost 3.2.0, pandas 2.3.3, NumPy 2.2.6 y SciPy 1.15.3, en un portátil con procesador AMD Ryzen 5 7520U (4 núcleos, 8 hilos), 8\,GB de RAM y Windows 11, con la búsqueda paralela en todos los hilos. La partición es determinista y los modelos estocásticos usan la semilla 42, así que cada configuración se ejecuta una vez; la variabilidad se reporta entre plantas.
+
 
 % =====================================================================
 \section{Resultados}\label{sec:resultados}
